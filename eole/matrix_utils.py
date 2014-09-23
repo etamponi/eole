@@ -48,5 +48,5 @@ def sharpen_probability_matrix(matrix):
 def prediction_matrix(probability_matrix, labels):
     pm = []
     for row in probability_matrix:
-        pm.append([labels[p.argmax()] for p in row])
+        pm.append(labels[row.argmax(axis=1)])
     return numpy.asarray(pm)

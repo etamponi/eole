@@ -1,4 +1,5 @@
 import numpy
+from scipy.spatial import distance
 
 __author__ = 'Emanuele'
 
@@ -10,7 +11,7 @@ class ExponentialWeighting(object):
         self.power = power
 
     def apply_to(self, x, centroid):
-        return numpy.exp(-0.5 * self.precision * numpy.linalg.norm(x - centroid)**self.power)
+        return numpy.exp(-0.5 * self.precision * distance.euclidean(x, centroid)**self.power)
 
     def apply_to_all(self, instances, centroid, normalize=False):
         weights = numpy.array([self.apply_to(x, centroid) for x in instances])

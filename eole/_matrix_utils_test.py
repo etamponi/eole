@@ -101,7 +101,7 @@ class MatrixUtilsTest(unittest.TestCase):
             [a, b, c],
             [d, e, f]
         ])
-        labels = ["a", "b"]
+        labels = numpy.asarray(["a", "b"])
         expected = numpy.asarray([
             ["a", "b", "a"],
             ["b", "b", "a"]

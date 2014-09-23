@@ -1,4 +1,5 @@
 import numpy
+from scipy.spatial import distance
 
 __author__ = 'Emanuele'
 
@@ -10,7 +11,7 @@ class InverseDistance(object):
         self.offset = offset
 
     def apply_to(self, x, c):
-        return 1.0 / (numpy.linalg.norm(x - c) + self.offset)**self.power
+        return 1.0 / (distance.euclidean(x, c) + self.offset)**self.power
 
     def apply_to_all(self, instances, c):
         return [self.apply_to(x, c) for x in instances]
