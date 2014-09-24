@@ -6,9 +6,10 @@ __author__ = 'Emanuele'
 
 class ExponentialWeighting(object):
 
-    def __init__(self, precision, power):
+    def __init__(self, precision, power, sample_percent=None):
         self.precision = precision
         self.power = power
+        self.sample_percent = None if sample_percent is None else float(sample_percent)/100
 
     def apply_to(self, x, centroid):
         return numpy.exp(-0.5 * self.precision * distance.euclidean(x, centroid)**self.power)
@@ -20,4 +21,10 @@ class ExponentialWeighting(object):
         return weights
 
     def generate_sample(self, instances, centroid):
-        return self.apply_to_all(instances, centroid)
+        sample = self.apply_to_all(instances, centroid)
+        if self.sample_percent is not None:
+            choices = numpy.random.choice(len(instances), size=int(len(instances)*self.sample_percent), replace=False)
+            mask = numpy.zeros(len(instances))
+            mask[choices] = 1
+            sample = mask * sample
+        return sample

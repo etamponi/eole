@@ -3,7 +3,7 @@ import unittest
 import numpy
 from sklearn.tree.tree import DecisionTreeClassifier
 
-from eole.centroid_picker import CentroidPicker
+from eole.centroid_picker import RandomCentroidPicker
 from eole.ensemble_trainer import EnsembleTrainer
 from eole.exponential_weighting import ExponentialWeighting
 
@@ -18,7 +18,7 @@ class EnsembleTrainerTest(unittest.TestCase):
         tests = numpy.random.randn(10, 10)
         ft = EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(),
-            n_experts=2, centroid_picker=CentroidPicker(), sampling=ExponentialWeighting(1, 2)
+            n_experts=2, centroid_picker=RandomCentroidPicker(), sampling=ExponentialWeighting(1, 2)
         )
         e = ft.train(instances, labels)
         self.assertEqual(2, len(e))

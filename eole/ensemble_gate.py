@@ -15,10 +15,6 @@ class EnsembleGate(object):
             ret[:, j] = self.expert_weighting.apply_to_all(instances, e.centroid)
         return ret
 
-#    def prediction_matrix(self, experts, instances):
-#        ret = [e.predict(instances) for e in experts]
-#        return numpy.asarray(ret).transpose()
-
     def probability_matrix(self, instances):
         n_classes = len(self.experts[0].predict_probs([instances[0]])[0])
         ret = numpy.zeros((len(instances), len(self.experts), n_classes))

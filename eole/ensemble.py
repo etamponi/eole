@@ -3,16 +3,15 @@ from sklearn.cross_validation import StratifiedKFold
 from sklearn.datasets.samples_generator import make_classification
 from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.metrics.metrics import accuracy_score
-from eole import matrix_utils
-from sklearn.datasets.base import load_iris
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.tree.tree import DecisionTreeClassifier
-from eole.deterministic_sampling import DeterministicSampling
+
+from eole import matrix_utils
 from eole.ensemble_gate import EnsembleGate
-from eole.centroid_picker import CentroidPicker, AlmostRandomCentroidPicker
+from eole.centroid_picker import AlmostRandomCentroidPicker
 from eole.ensemble_trainer import EnsembleTrainer
 from eole.exponential_weighting import ExponentialWeighting
-from eole.generalized_bootstrap import GeneralizedBootstrap
+
 
 __author__ = 'Emanuele Tamponi'
 
@@ -76,19 +75,16 @@ if __name__ == "__main__":
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(
                 max_features="auto",
-                max_depth=10
+                max_depth=20
             ),
             n_experts=500,
             centroid_picker=AlmostRandomCentroidPicker(),
-            sampling=DeterministicSampling(
-                sample_percent=500,
-                weighting=ExponentialWeighting(4, 1)
-            )
+            sampling=ExponentialWeighting(precision=4, power=1, sample_percent=None)
         ),
         expert_weighting=ExponentialWeighting(precision=5, power=1),
         preprocessor=MinMaxScaler(),
         use_probs=True,
-        use_competences=True
+        use_competences=False
     )
 
     ensemble.train(train_instances, train_labels)

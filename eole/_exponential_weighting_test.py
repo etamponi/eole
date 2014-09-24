@@ -26,3 +26,10 @@ class ExponentialWeightingTest(unittest.TestCase):
         weighting = ExponentialWeighting(precision=1, power=2)
         weights = weighting.apply_to_all([[3, 4], [6, 8]], centroid)
         self.assertTrue(numpy.all([numpy.exp(-0.5 * 25), numpy.exp(-0.5 * 100)] == weights))
+
+    def test_sample_percent(self):
+        instances = numpy.random.randn(100, 2)
+        centroid = instances[5]
+        weighting = ExponentialWeighting(precision=1, power=2, sample_percent=70)
+        sample = weighting.generate_sample(instances, centroid)
+        self.assertEqual((sample != 0).sum(), 70)

@@ -1,11 +1,13 @@
 from cmath import log
+
 import numpy
 from scipy.spatial import distance
+
 
 __author__ = 'Emanuele'
 
 
-class CentroidPicker(object):
+class RandomCentroidPicker(object):
 
     def __init__(self):
         pass

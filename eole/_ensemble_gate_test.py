@@ -34,13 +34,6 @@ class EnsembleGateTest(unittest.TestCase):
         ]
         self.assertEqual(expected, self.gate.competence_matrix(self.instances).tolist())
 
-#    def test_prediction_matrix(self):
-#        expected = [
-#            [0, 1, 1],
-#            [1, 1, 0]
-#        ]
-#        self.assertEqual(expected, self.gate.prediction_matrix(self.experts, self.instances).tolist())
-
     def test_probability_matrix(self):
         expected = [
             [[0.7, 1.0 - 0.7], [1.0 - 0.9, 0.9], [0.4, 0.6]],
