@@ -4,7 +4,7 @@ import unittest
 import numpy
 
 from analysis import Experiment
-from analysis.report import Report, ReportNotReady, ReportDirectoryError
+from analysis.report import Report, ReportNotReady, ReportDirectoryError, ReportFileAlreadyExists
 from eole import EOLE
 
 
@@ -87,3 +87,21 @@ class ReportTest(unittest.TestCase):
             self.report.analyze_run(self.prediction_matrix, self.labels)
         self.assertRaises(ReportDirectoryError, self.report.dump, "not_exists/")
         self.assertRaises(ReportDirectoryError, self.report.dump, "tests/file_test")
+
+    def test_load_works_on_dump(self):
+        for i in range(self.report.sample_size):
+            self.report.analyze_run(self.prediction_matrix, self.labels)
+        self.report.dump("tests/")
+        loaded = Report.load("tests/test_experiment.rep")
+        numpy.testing.assert_array_equal(self.report.sample_size, loaded.sample_size)
+        numpy.testing.assert_array_equal(self.report.accuracy_sample, loaded.accuracy_sample)
+        os.remove("tests/test_experiment.rep")
+
+    def test_dump_dont_override_files(self):
+        for i in range(self.report.sample_size):
+            self.report.analyze_run(self.prediction_matrix, self.labels)
+        try:
+            self.report.dump("tests/")
+            self.assertRaises(ReportFileAlreadyExists, self.report.dump, "tests/")
+        finally:
+            os.remove("tests/test_experiment.rep")

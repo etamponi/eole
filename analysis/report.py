@@ -36,8 +36,16 @@ class Report(object):
     def dump(self, directory):
         if not os.path.isdir(directory):
             raise ReportDirectoryError()
-        with open("{}/{}.rep".format(directory, self.experiment.name), "w") as f:
+        file_name = "{}/{}.rep".format(directory, self.experiment.name)
+        if os.path.isfile(file_name):
+            raise ReportFileAlreadyExists()
+        with open(file_name, "w") as f:
             cPickle.dump(self, f)
+
+    @staticmethod
+    def load(file_name):
+        with open(file_name) as f:
+            return cPickle.load(f)
 
 
 class ReportNotReady(Exception):
@@ -45,4 +53,8 @@ class ReportNotReady(Exception):
 
 
 class ReportDirectoryError(Exception):
+    pass
+
+
+class ReportFileAlreadyExists(Exception):
     pass
