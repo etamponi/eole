@@ -3,15 +3,10 @@ from copy import deepcopy
 import numpy
 from sklearn.cross_validation import StratifiedKFold
 
+from analysis.report import Report
+
 
 __author__ = 'Emanuele Tamponi'
-
-
-class Result(object):
-
-    def __init__(self, experiment):
-        self.experiment = experiment
-        self.runs = []
 
 
 class Experiment(object):
@@ -24,7 +19,7 @@ class Experiment(object):
         self.repetitions = repetitions
 
     def run(self):
-        result = Result(self)
+        report = Report(self)
         instances, labels = self.dataset_loader.load_dataset()
         for i in range(self.repetitions):
             numpy.random.seed(i)
@@ -37,5 +32,5 @@ class Experiment(object):
                 test_labels = labels[test_indices]
                 ensemble = deepcopy(self.ensemble)
                 ensemble.train(train_instances, train_labels)
-                result.runs.append({"prediction_matrix": ensemble.predict(test_instances), "labels": test_labels})
-        return result
+                report.analyze_run(ensemble.predict(test_instances), test_labels)
+        return report
