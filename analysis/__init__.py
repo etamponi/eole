@@ -22,8 +22,11 @@ class Experiment(object):
         report = Report(self)
         instances, labels = self.dataset_loader.load_dataset()
         for i in range(self.repetitions):
+            instances, labels = instances.copy(), labels.copy()
             numpy.random.seed(i)
-            # TODO shuffle instances and labels
+            permutation = numpy.random.permutation(len(instances))
+            instances = instances[permutation]
+            labels = labels[permutation]
             cv = StratifiedKFold(labels, n_folds=self.folds)
             for train_indices, test_indices in cv:
                 train_instances = instances[train_indices]
