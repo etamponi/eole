@@ -1,6 +1,6 @@
 import numpy
 from sklearn.cross_validation import StratifiedKFold
-from sklearn.datasets.samples_generator import make_classification
+from sklearn.datasets.base import load_digits
 from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.metrics.metrics import accuracy_score
 from sklearn.preprocessing.data import MinMaxScaler
@@ -58,11 +58,11 @@ class EOLE(object):
 if __name__ == "__main__":
     numpy.random.seed(1)
 
-    # iris = load_iris()
-    # instances = iris.data
-    # labels = iris.target_names[iris.target]
+    iris = load_digits()
+    instances = iris.data
+    labels = iris.target_names[iris.target]
 
-    instances, labels = make_classification(1000, n_classes=2, n_informative=10, n_clusters_per_class=5)
+    # instances, labels = make_classification(1000, n_classes=2, n_informative=10, n_clusters_per_class=5)
 
     skf = StratifiedKFold(labels, n_folds=10)
     train_indices, test_indices = next(iter(skf))
@@ -71,15 +71,17 @@ if __name__ == "__main__":
     test_instances = instances[test_indices]
     test_labels = labels[test_indices]
 
+    numpy.random.seed(4)
+
     ensemble = EOLE(
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(
                 max_features="auto",
-                max_depth=20
+                max_depth=15
             ),
-            n_experts=500,
+            n_experts=100,
             centroid_picker=AlmostRandomCentroidPicker(),
-            sampling=ExponentialWeighting(precision=4, power=1, sample_percent=None)
+            sampling=ExponentialWeighting(precision=4, power=2, sample_percent=None)
         ),
         expert_weighting=ExponentialWeighting(precision=5, power=1),
         preprocessor=MinMaxScaler(),
@@ -90,11 +92,11 @@ if __name__ == "__main__":
     ensemble.train(train_instances, train_labels)
     prediction_matrix = ensemble.predict(test_instances)
     print numpy.asarray(
-        [accuracy_score(test_labels, prediction_matrix[:, j]) for j in range(0, prediction_matrix.shape[1], 10)]
+        [accuracy_score(test_labels, prediction_matrix[:, j]) for j in range(4, prediction_matrix.shape[1], 5)]
     )
 
     rf = RandomForestClassifier(
-        n_estimators=500,
+        n_estimators=100,
         max_features="auto"
     ).fit(train_instances, train_labels)
     print "RF:", accuracy_score(test_labels, rf.predict(test_instances))

@@ -1,7 +1,6 @@
-from cmath import log
-
 import numpy
 from scipy.spatial import distance
+from sklearn.neighbors.kde import KernelDensity
 
 
 __author__ = 'Emanuele'
@@ -27,8 +26,47 @@ class AlmostRandomCentroidPicker(object):
         p = numpy.ones(len(instances)) / len(instances)
         ret = [instances[numpy.random.choice(len(instances), p=p)]]
         while len(ret) < n_centroids:
-            for i, x in enumerate(instances):
-                p[i] *= log(1.0 + distance.euclidean(x, ret[-1])).real
+            distances = numpy.asarray([distance.euclidean(x, ret[-1]) for x in instances])
+            distances = distances / distances.sum()
+            p = p * numpy.log(1.0 + distances)
             p = p / p.sum()
             ret.append(instances[numpy.random.choice(len(instances), p=p)])
+        return numpy.asarray(ret)
+
+
+class KernelDensityCentroidPicker(object):
+
+    def __init__(self):
+        pass
+
+    def pick(self, instances, n_centroids):
+        estimator = KernelDensity().fit(instances)
+        p = numpy.exp(estimator.score_samples(instances))
+        p = p / p.sum()
+        ret = [instances[numpy.random.choice(len(instances), p=p)]]
+        while len(ret) < n_centroids:
+            distances = numpy.asarray([distance.euclidean(x, ret[-1]) for x in instances])
+            distances = distances / distances.sum()
+            p = p * numpy.log(1.0 + distances)
+            p = p / p.sum()
+            ret.append(instances[numpy.random.choice(len(instances), p=p)])
+        return numpy.asarray(ret)
+
+
+class DeterministicCentroidPicker(object):
+
+    def __init__(self):
+        pass
+
+    def pick(self, instances, n_centroids):
+        estimator = KernelDensity().fit(instances)
+        p = numpy.exp(estimator.score_samples(instances))
+        p = p / p.sum()
+        ret = [instances[p.argmax()]]
+        while len(ret) < n_centroids:
+            distances = numpy.asarray([distance.euclidean(x, ret[-1]) for x in instances])
+            distances = distances / distances.sum()
+            p = p * numpy.log(1.0 + distances)
+            p = p / p.sum()
+            ret.append(instances[p.argmax()])
         return numpy.asarray(ret)
