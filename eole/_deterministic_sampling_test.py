@@ -1,7 +1,10 @@
 import unittest
+
 import numpy
+
 from eole.deterministic_sampling import DeterministicSampling
 from eole.exponential_weighting import ExponentialWeighting
+
 
 __author__ = 'Emanuele Tamponi'
 

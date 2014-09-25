@@ -1,16 +1,7 @@
 import numpy
-from sklearn.cross_validation import StratifiedKFold
-from sklearn.datasets.base import load_digits
-from sklearn.ensemble.forest import RandomForestClassifier
-from sklearn.metrics.metrics import accuracy_score
-from sklearn.preprocessing.data import MinMaxScaler
-from sklearn.tree.tree import DecisionTreeClassifier
 
 from eole import matrix_utils
 from eole.ensemble_gate import EnsembleGate
-from eole.centroid_picker import AlmostRandomCentroidPicker
-from eole.ensemble_trainer import EnsembleTrainer
-from eole.exponential_weighting import ExponentialWeighting
 
 
 __author__ = 'Emanuele Tamponi'
@@ -53,50 +44,3 @@ class EOLE(object):
         else:
             ensemble_probs = matrix_utils.partial_row_average_matrix(probability_matrix)
         return ensemble_probs
-
-
-if __name__ == "__main__":
-    numpy.random.seed(1)
-
-    iris = load_digits()
-    instances = iris.data
-    labels = iris.target_names[iris.target]
-
-    # instances, labels = make_classification(1000, n_classes=2, n_informative=10, n_clusters_per_class=5)
-
-    skf = StratifiedKFold(labels, n_folds=10)
-    train_indices, test_indices = next(iter(skf))
-    train_instances = instances[train_indices]
-    train_labels = labels[train_indices]
-    test_instances = instances[test_indices]
-    test_labels = labels[test_indices]
-
-    numpy.random.seed(4)
-
-    ensemble = EOLE(
-        ensemble_trainer=EnsembleTrainer(
-            base_estimator=DecisionTreeClassifier(
-                max_features="auto",
-                max_depth=15
-            ),
-            n_experts=100,
-            centroid_picker=AlmostRandomCentroidPicker(),
-            sampling=ExponentialWeighting(precision=4, power=2, sample_percent=None)
-        ),
-        expert_weighting=ExponentialWeighting(precision=5, power=1),
-        preprocessor=MinMaxScaler(),
-        use_probs=True,
-        use_competences=False
-    )
-
-    ensemble.train(train_instances, train_labels)
-    prediction_matrix = ensemble.predict(test_instances)
-    print numpy.asarray(
-        [accuracy_score(test_labels, prediction_matrix[:, j]) for j in range(4, prediction_matrix.shape[1], 5)]
-    )
-
-    rf = RandomForestClassifier(
-        n_estimators=100,
-        max_features="auto"
-    ).fit(train_instances, train_labels)
-    print "RF:", accuracy_score(test_labels, rf.predict(test_instances))
