@@ -18,9 +18,9 @@ class EnsembleTrainerTest(unittest.TestCase):
         tests = numpy.random.randn(10, 10)
         ft = EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(),
-            n_experts=2, centroid_picker=RandomCentroidPicker(), sampling=ExponentialWeighting(1, 2)
+            centroid_picker=RandomCentroidPicker(), sampling=ExponentialWeighting(1, 2)
         )
-        e = ft.train(instances, labels)
+        e = ft.train(2, instances, labels)
         self.assertEqual(2, len(e))
         self.assertNotEqual(e[0].centroid.tolist(), e[1].centroid.tolist())
         self.assertNotEqual(e[0].predict(tests).tolist(), e[1].predict(tests).tolist())

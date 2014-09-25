@@ -2,8 +2,8 @@ import unittest
 
 import numpy
 
-from experiment import arff_utils
-from experiment.arff_utils import ArffLoader
+from analysis import arff_utils
+from analysis.arff_utils import ArffLoader
 
 
 __author__ = 'Emanuele Tamponi'
