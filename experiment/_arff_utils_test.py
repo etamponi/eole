@@ -27,18 +27,24 @@ class ArffUtilsTest(unittest.TestCase):
                 [0.0, "egg", 1.0, "king", 1.0]
             ]
         }
-        self.assertEqual([1, 3], arff_utils.nominal_attributes(dataset))
+        expected = {
+            "input2": {"index": 1, "classes": ["sheep", "egg", "farm"]},
+            "input4": {"index": 3, "classes": ["queen", "king", "jack"]}
+        }
+        self.assertEqual(expected, arff_utils.nominal_attributes(dataset))
 
     def test_load_dataset_standard(self):
         al = ArffLoader("tests/dataset.arff")
         expected_instances = numpy.asarray([
-            [0.0, 0.0, 1.0, 1.2],
-            [1.0, 0.0, 0.0, 0.3],
-            [0.0, 1.0, 0.0, 3.0]
+            [1.0, 0.0, 0.0, 1.2],
+            [0.0, 0.0, 1.0, 0.3],
+            [0.0, 1.0, 0.0, 3.0],
+            [0.0, 0.0, 1.0, 4.0]
         ])
         expected_labels = numpy.asarray([
             "POS",
             "POS",
+            "NEG",
             "NEG"
         ])
         instances, labels = al.load_dataset()
@@ -48,14 +54,16 @@ class ArffUtilsTest(unittest.TestCase):
     def test_load_dataset_with_label_not_last_attribute(self):
         al = ArffLoader("tests/dataset.arff", label_attribute="first")
         expected_instances = numpy.asarray([
-            [0.0, 1.0, 1.2],
-            [0.0, 1.0, 0.3],
-            [1.0, 0.0, 3.0]
+            [1.2, 0.0],
+            [0.3, 0.0],
+            [3.0, 1.0],
+            [4.0, 1.0]
         ])
         expected_labels = numpy.asarray([
             "sheep",
             "cannon",
-            "egg"
+            "egg",
+            "cannon"
         ])
         instances, labels = al.load_dataset()
         numpy.testing.assert_array_equal(expected_instances, instances)
