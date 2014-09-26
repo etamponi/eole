@@ -28,7 +28,8 @@ class Experiment(object):
             instances = instances[permutation]
             labels = labels[permutation]
             cv = StratifiedKFold(labels, n_folds=self.folds)
-            for train_indices, test_indices in cv:
+            for j, (train_indices, test_indices) in enumerate(cv):
+                print "Start experiment {}: repetition {}, fold {}".format(self.name, i+1, j+1)
                 train_instances = instances[train_indices]
                 train_labels = labels[train_indices]
                 test_instances = instances[test_indices]
