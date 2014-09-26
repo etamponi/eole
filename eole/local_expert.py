@@ -5,12 +5,13 @@ __author__ = 'Emanuele Tamponi'
 
 class LocalExpert(object):
 
-    def __init__(self, base_estimator, centroid, sampling):
+    def __init__(self, base_estimator, sampling):
         self.base_estimator = base_estimator
         self.sampling = sampling
-        self.centroid = numpy.asarray(centroid)
+        self.centroid = None
 
-    def train(self, instances, labels):
+    def train(self, centroid, instances, labels):
+        self.centroid = numpy.asarray(centroid)
         sample = self.sampling.generate_sample(instances, self.centroid)
         self.base_estimator.fit(instances, labels, sample_weight=sample)
 

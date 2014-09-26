@@ -31,4 +31,5 @@ class ExperimentTest(unittest.TestCase):
         )
         exp = Experiment("test_experiment", ensemble, ArffLoader("tests/dataset.arff"), folds=2, repetitions=10)
         report = exp.run()
+
         self.assertEqual(20, report.sample_size)

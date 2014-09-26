@@ -97,7 +97,7 @@ class ReportTest(unittest.TestCase):
         numpy.testing.assert_array_equal(self.report.accuracy_sample, loaded.accuracy_sample)
         os.remove("tests/test_experiment.rep")
 
-    def test_dump_dont_override_files(self):
+    def test_dump_does_not_override_files(self):
         for i in range(self.report.sample_size):
             self.report.analyze_run(self.prediction_matrix, self.labels)
         try:
