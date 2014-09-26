@@ -37,8 +37,11 @@ class ArffLoader(object):
                     continue
                 # Nominal attribute
                 if isinstance(attribute_type, list):
-                    # Check if no data is present for this attribute
-                    if all(e is None for e in data[row]):
+                    # Convert None in '?' for next check and to make label_binarize work
+                    for j in range(len(data[row])):
+                        if data[row][j] is None:
+                            data[row][j] = "?"
+                    if numpy.all(data[row] == "?"):
                         # If no data is present, just remove the row
                         data.pop(row)
                         continue
@@ -47,6 +50,10 @@ class ArffLoader(object):
                     # Numeric attributes: check for nan values
                     data[row] = data[row].astype(numpy.float64)
                     nans = numpy.isnan(data[row])
+                    if numpy.all(nans):
+                        # If everything is nan, remove the feature
+                        data.pop(row)
+                        continue
                     if numpy.any(nans):
                         mean = data[row][numpy.invert(nans)].sum() / numpy.invert(nans).sum()
                         data[row][nans] = mean
