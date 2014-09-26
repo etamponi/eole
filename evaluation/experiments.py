@@ -15,9 +15,9 @@ __author__ = 'Emanuele Tamponi'
 
 def main():
     ds_names = [
-        # "anneal",
-        # "audiology",
-        # "autos",
+        "anneal",
+        "audiology",
+        "autos",
         "balance-scale",
         "breast-cancer",
         "heart-c",

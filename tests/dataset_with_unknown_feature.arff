@@ -1,0 +1,11 @@
+@RELATION example
+
+@ATTRIBUTE first {sheep, egg, cannon}
+@ATTRIBUTE second REAL
+@ATTRIBUTE third {POS, NEG}
+
+@DATA
+?, 1.2, POS
+?, 0.3, POS
+?, 3.0, NEG
+?, 4.0, NEG

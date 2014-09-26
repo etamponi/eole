@@ -23,23 +23,32 @@ class ArffLoader(object):
         with open(self.file_name) as f:
             dataset = arff.load(f)
 
-            nominals = nominal_attributes(dataset)
             if self.label_attribute is None:
                 self.label_attribute = dataset["attributes"][-1][0]
-            label_index = nominals[self.label_attribute]["index"]
-            del nominals[self.label_attribute]
 
             data = list(numpy.asarray(dataset["data"]).transpose())
-            labels = data[label_index]
+            labels = None
 
-            for nominal, info in nominals.iteritems():
-                j, classes = info["index"], info["classes"]
-                data[j] = numpy.asarray(label_binarize(data[j], classes))
-            data.pop(label_index)
+            row = 0
+            for attribute_name, attribute_type in dataset["attributes"]:
+                if attribute_name == self.label_attribute:
+                    # Labels found!
+                    labels = data.pop(row)
+                    continue
+                # Nominal attribute
+                if isinstance(attribute_type, list):
+                    # Check if no data is present for this attribute
+                    if all(e is None for e in data[row]):
+                        # If no data is present, just remove the row
+                        data.pop(row)
+                        continue
+                    data[row] = numpy.asarray(label_binarize(data[row], attribute_type), dtype=numpy.float64)
+                else:
+                    # Numeric attributes: reshape to do hstack
+                    data[row] = data[row].reshape((len(data[row]), 1)).astype(numpy.float64)
+                # Check next row if we have not removed the current one
+                row += 1
 
-            for j in range(len(data)):
-                if len(data[j].shape) < 2:
-                    data[j] = data[j].reshape((len(data[j]), 1))
-            instances = numpy.hstack(tuple(data)).astype(numpy.float64)
+            instances = numpy.hstack(tuple(data))
 
             return instances, labels
