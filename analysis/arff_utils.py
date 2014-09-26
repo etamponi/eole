@@ -44,8 +44,14 @@ class ArffLoader(object):
                         continue
                     data[row] = numpy.asarray(label_binarize(data[row], attribute_type), dtype=numpy.float64)
                 else:
-                    # Numeric attributes: reshape to do hstack
-                    data[row] = data[row].reshape((len(data[row]), 1)).astype(numpy.float64)
+                    # Numeric attributes: check for nan values
+                    data[row] = data[row].astype(numpy.float64)
+                    nans = numpy.isnan(data[row])
+                    if numpy.any(nans):
+                        mean = data[row][numpy.invert(nans)].sum() / numpy.invert(nans).sum()
+                        data[row][nans] = mean
+                    # Reshape to do hstack later
+                    data[row] = data[row].reshape((len(data[row]), 1))
                 # Check next row if we have not removed the current one
                 row += 1
 
