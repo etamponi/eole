@@ -63,9 +63,9 @@ class ReportTest(unittest.TestCase):
             self.report.analyze_run(self.prediction_matrix, self.labels)
         expected_mean = numpy.asarray([0.5, 0.75, 0.75])
         expected_variance = numpy.zeros(3)
-        mean, variance = self.report.synthesis()
-        numpy.testing.assert_array_almost_equal(expected_mean, mean)
-        numpy.testing.assert_array_almost_equal(expected_variance, variance)
+        synthesis = self.report.synthesis()
+        numpy.testing.assert_array_almost_equal(expected_mean, synthesis["accuracy"]["mean"])
+        numpy.testing.assert_array_almost_equal(expected_variance, synthesis["accuracy"]["variance"])
 
     def test_ready(self):
         for i in range(self.report.sample_size - 1):

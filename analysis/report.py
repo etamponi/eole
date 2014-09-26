@@ -1,9 +1,11 @@
 from copy import deepcopy
 import os
+import cPickle
 
 import numpy
-from pymc.six.moves import cPickle
 from sklearn.metrics.metrics import accuracy_score
+
+from analysis.metrics import precision_recall_f1_score
 
 
 __author__ = 'Emanuele Tamponi'
@@ -14,21 +16,35 @@ class Report(object):
     def __init__(self, experiment):
         self.experiment = deepcopy(experiment)
         self.sample_size = experiment.folds * experiment.repetitions
-        self.accuracy_sample = numpy.zeros((self.sample_size, experiment.ensemble.n_experts))
+        shape = (self.sample_size, experiment.ensemble.n_experts)
+        self.accuracy_sample = numpy.zeros(shape)
+        self.precision_sample = numpy.zeros(shape)
+        self.recall_sample = numpy.zeros(shape)
+        self.f1_sample = numpy.zeros(shape)
         self.current_run = 0
 
     def analyze_run(self, prediction_matrix, labels):
-        self.accuracy_sample[self.current_run] = numpy.asarray(
-            [accuracy_score(labels, prediction_matrix[:, i]) for i in range(self.accuracy_sample.shape[1])]
-        )
+        for i in range(self.accuracy_sample.shape[1]):
+            predictions = prediction_matrix[:, i]
+            self.accuracy_sample[self.current_run][i] = accuracy_score(labels, predictions)
+
+            precision, recall, f1 = precision_recall_f1_score(labels, predictions)
+            self.precision_sample[self.current_run][i] = precision
+            self.recall_sample[self.current_run][i] = recall
+            self.f1_sample[self.current_run][i] = f1
         self.current_run += 1
 
     def synthesis(self):
         if not self.is_ready():
             raise ReportNotReady()
-        mean = self.accuracy_sample.mean(axis=0)
-        variance = self.accuracy_sample.var(axis=0)
-        return mean, variance
+        ret = {}
+        for score in ["accuracy", "precision", "recall", "f1"]:
+            sample = self.__dict__[score+"_sample"]
+            ret[score] = {
+                "mean": sample.mean(axis=0),
+                "variance": sample.var(axis=0)
+            }
+        return ret
 
     def is_ready(self):
         return self.current_run == self.sample_size

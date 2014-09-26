@@ -30,17 +30,17 @@ class LocalExpertTest(unittest.TestCase):
     def test_repeatability_and_randomness(self):
         lt1 = LocalExpert(
             base_estimator=DecisionTreeClassifier(max_features="log2"),
-            centroid=[0, 0],
+            centroid=numpy.zeros(10),
             sampling=GeneralizedBootstrap(500, ExponentialWeighting(1, 2))
         )
         lt2 = LocalExpert(
             base_estimator=DecisionTreeClassifier(max_features="log2"),
-            centroid=[0, 0],
+            centroid=numpy.zeros(10),
             sampling=GeneralizedBootstrap(500, ExponentialWeighting(1, 2))
         )
-        instances = numpy.random.randn(10, 2)
+        instances = numpy.random.randn(10, 10)
         labels = list("aaaaa") + list("bbbbb")
-        tests = numpy.random.randn(10, 2)
+        tests = numpy.random.randn(10, 10)
         numpy.random.seed(1)
         lt1.train(instances, labels)
         lt2.train(instances, labels)
