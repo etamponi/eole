@@ -57,8 +57,8 @@ def main():
         ("random_eole_5", make_exponential_ensemble(5))
     ]
 
-    n_folds = 10
-    repetitions = 100
+    n_folds = 5
+    repetitions = 20
 
     for ds_name in ds_names:
         print "Start experiments on: {}".format(ds_name)
