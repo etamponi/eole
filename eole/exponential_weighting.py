@@ -1,10 +1,16 @@
 import numpy
 from scipy.spatial import distance
 
+from eole.trainable import Trainable
+
+
 __author__ = 'Emanuele'
 
 
-class ExponentialWeighting(object):
+class ExponentialWeighting(Trainable):
+
+    def train(self, instances):
+        pass
 
     def __init__(self, precision, power, sample_percent=None):
         self.precision = precision

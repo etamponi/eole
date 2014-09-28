@@ -1,10 +1,16 @@
 import numpy
 from scipy.spatial import distance
 
+from eole.trainable import Trainable
+
+
 __author__ = 'Emanuele'
 
 
-class InverseDistance(object):
+class InverseDistance(Trainable):
+
+    def train(self, instances):
+        pass
 
     def __init__(self, power, offset):
         self.power = power

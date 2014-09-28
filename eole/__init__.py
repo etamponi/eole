@@ -23,7 +23,11 @@ class EOLE(object):
         self.labels, labels = numpy.unique(labels, return_inverse=True)
         if self.preprocessor is not None:
             instances = self.preprocessor.fit_transform(instances)
-        self.gate = EnsembleGate(self.ensemble_trainer.train(self.n_experts, instances, labels), self.expert_weighting)
+        self.expert_weighting.train(instances)
+        self.gate = EnsembleGate(
+            self.ensemble_trainer.train(self.n_experts, instances, labels),
+            self.expert_weighting
+        )
 
     def predict(self, instances):
         return matrix_utils.prediction_matrix(self.predict_probs(instances), self.labels)

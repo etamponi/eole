@@ -1,9 +1,15 @@
 import numpy
 
+from eole.trainable import Trainable
+
+
 __author__ = 'Emanuele'
 
 
-class GeneralizedBootstrap(object):
+class GeneralizedBootstrap(Trainable):
+
+    def train(self, instances):
+        self.weighting.train(instances)
 
     def __init__(self, sample_percent, weighting):
         self.sample_percent = float(sample_percent) / 100
