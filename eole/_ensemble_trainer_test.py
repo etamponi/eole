@@ -13,14 +13,14 @@ __author__ = 'Emanuele'
 
 class EnsembleTrainerTest(unittest.TestCase):
 
-    def test_train(self):
+    def test_train_generates_random_trees(self):
         instances, labels = numpy.random.randn(50, 10), numpy.random.choice(["a", "b", "c"], size=50)
         tests = numpy.random.randn(10, 10)
         ft = EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(),
             centroid_picker=RandomCentroidPicker(), sampling=ExponentialWeighting(1, 2)
         )
-        e = ft.train(2, instances, labels)
-        self.assertEqual(2, len(e))
-        self.assertNotEqual(e[0].centroid.tolist(), e[1].centroid.tolist())
-        self.assertNotEqual(e[0].predict(tests).tolist(), e[1].predict(tests).tolist())
+        experts = ft.train(2, instances, labels)
+        self.assertEqual(2, len(experts))
+        self.assertNotEqual(experts[0].centroid.tolist(), experts[1].centroid.tolist())
+        self.assertNotEqual(experts[0].predict(tests).tolist(), experts[1].predict(tests).tolist())

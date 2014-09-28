@@ -1,10 +1,11 @@
 import unittest
 
+import numpy
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.tree.tree import DecisionTreeClassifier
 
-from analysis import Experiment
-from analysis.arff_utils import ArffLoader
+from analysis.dataset_utils import ArffLoader
+from analysis.experiment import Experiment
 from eole import EOLE
 from eole.centroid_picker import RandomCentroidPicker
 from eole.ensemble_trainer import EnsembleTrainer
@@ -16,8 +17,8 @@ __author__ = 'Emanuele Tamponi'
 
 class ExperimentTest(unittest.TestCase):
 
-    def test_run_returns_report(self):
-        ensemble = EOLE(
+    def setUp(self):
+        self.ensemble = EOLE(
             n_experts=2,
             ensemble_trainer=EnsembleTrainer(
                 DecisionTreeClassifier(max_depth=1),
@@ -29,7 +30,16 @@ class ExperimentTest(unittest.TestCase):
             use_probs=True,
             use_competences=False
         )
-        exp = Experiment("test_experiment", ensemble, ArffLoader("tests/dataset.arff"), folds=2, repetitions=10)
-        report = exp.run()
+        self.experiment = Experiment(
+            "test_experiment", self.ensemble, ArffLoader("tests/dataset.arff"), folds=2, repetitions=10
+        )
+
+    def test_run_returns_report(self):
+        report = self.experiment.run()
 
         self.assertEqual(20, report.sample_size)
+
+    def test_each_repetition_is_different(self):
+        report = self.experiment.run()
+
+        self.assertFalse(numpy.array_equal(report.accuracy_sample[0], report.accuracy_sample[10]))

@@ -1,8 +1,8 @@
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.tree.tree import DecisionTreeClassifier
 
-from analysis import Experiment
 from analysis.arff_utils import ArffLoader
+from analysis.experiment import Experiment
 from eole import EOLE
 from eole.centroid_picker import RandomCentroidPicker
 from eole.ensemble_trainer import EnsembleTrainer
@@ -15,11 +15,11 @@ __author__ = 'Emanuele Tamponi'
 
 def main():
     ds_names = [
-        "anneal",
-        "audiology",
-        "autos",
-        "balance-scale",
-        "breast-cancer",
+        # "anneal",
+        # "audiology",
+        # "autos",
+        # "balance-scale",
+        # "breast-cancer",
         "heart-c",
         "credit-a",
         "credit-g",

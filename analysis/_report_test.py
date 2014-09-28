@@ -3,7 +3,7 @@ import unittest
 
 import numpy
 
-from analysis import Experiment
+from analysis.experiment import Experiment
 from analysis.report import Report, ReportNotReady, ReportDirectoryError, ReportFileAlreadyExists
 from eole import EOLE
 
@@ -78,9 +78,11 @@ class ReportTest(unittest.TestCase):
     def test_dump_filename(self):
         for i in range(self.report.sample_size):
             self.report.analyze_run(self.prediction_matrix, self.labels)
-        self.report.dump("tests/")
-        self.assertTrue(os.path.isfile("tests/test_experiment.rep"))
-        os.remove("tests/test_experiment.rep")
+        try:
+            self.report.dump("tests/")
+            self.assertTrue(os.path.isfile("tests/test_experiment.rep"))
+        finally:
+            os.remove("tests/test_experiment.rep")
 
     def test_dump_directory_error(self):
         for i in range(self.report.sample_size):
@@ -91,11 +93,13 @@ class ReportTest(unittest.TestCase):
     def test_load_works_on_dump(self):
         for i in range(self.report.sample_size):
             self.report.analyze_run(self.prediction_matrix, self.labels)
-        self.report.dump("tests/")
-        loaded = Report.load("tests/test_experiment.rep")
-        numpy.testing.assert_array_equal(self.report.sample_size, loaded.sample_size)
-        numpy.testing.assert_array_equal(self.report.accuracy_sample, loaded.accuracy_sample)
-        os.remove("tests/test_experiment.rep")
+        try:
+            self.report.dump("tests/")
+            loaded = Report.load("tests/test_experiment.rep")
+            numpy.testing.assert_array_equal(self.report.sample_size, loaded.sample_size)
+            numpy.testing.assert_array_equal(self.report.accuracy_sample, loaded.accuracy_sample)
+        finally:
+            os.remove("tests/test_experiment.rep")
 
     def test_dump_does_not_override_files(self):
         for i in range(self.report.sample_size):

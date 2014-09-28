@@ -32,4 +32,4 @@ class ExponentialWeightingTest(unittest.TestCase):
         centroid = instances[5]
         weighting = ExponentialWeighting(precision=1, power=2, sample_percent=70)
         sample = weighting.generate_sample(instances, centroid)
-        self.assertEqual((sample != 0).sum(), 70)
+        self.assertEqual(sum(sample != 0), 70)

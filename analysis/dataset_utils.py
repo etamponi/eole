@@ -5,14 +5,6 @@ from sklearn.preprocessing.label import label_binarize
 __author__ = 'Emanuele Tamponi'
 
 
-def nominal_attributes(dataset):
-    ret = {}
-    for i, (attribute_name, attribute_type) in enumerate(dataset["attributes"]):
-        if isinstance(attribute_type, list):
-            ret[attribute_name] = {"index": i, "classes": attribute_type}
-    return ret
-
-
 class ArffLoader(object):
 
     def __init__(self, file_name, label_attribute=None):
@@ -65,3 +57,17 @@ class ArffLoader(object):
             instances = numpy.hstack(tuple(data))
 
             return instances, labels
+
+
+class CoupledShuffle(object):
+
+    def __init__(self, *arrays):
+        self.arrays = arrays
+        self.size = len(arrays[0])
+
+    def shuffle(self, seed=None):
+        if seed is not None:
+            numpy.random.seed(seed)
+        permutation = numpy.random.permutation(self.size)
+        arrays = list(array.copy()[permutation] for array in self.arrays)
+        return arrays
