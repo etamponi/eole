@@ -1,23 +1,20 @@
 import numpy
 
-from eole.trainable import Trainable
+from eole.interfaces import Sampler
 
 
 __author__ = 'Emanuele Tamponi'
 
 
-class DeterministicSampling(Trainable):
+class DeterministicSampler(Sampler):
 
-    def train(self, instances):
-        self.weighting.train(instances)
-
-    def __init__(self, sample_percent, weighting):
+    def __init__(self, sample_percent, weigher):
+        super(DeterministicSampler, self).__init__(weigher)
         self.sample_percent = float(sample_percent) / 100
-        self.weighting = weighting
 
     def generate_sample(self, instances, centroid):
         target_size = int(len(instances) * self.sample_percent)
-        weights = self.weighting.apply_to_all(instances, centroid)
+        weights = self.get_weights(instances, centroid)
         mul_a = 0
         mul_b = 1.
         sample = numpy.asarray(weights, dtype=int).sum()

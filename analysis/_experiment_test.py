@@ -9,7 +9,7 @@ from analysis.experiment import Experiment
 from eole import EOLE
 from eole.centroid_picker import RandomCentroidPicker
 from eole.ensemble_trainer import EnsembleTrainer
-from eole.exponential_weighting import ExponentialWeighting
+from eole.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele Tamponi'
@@ -23,9 +23,9 @@ class ExperimentTest(unittest.TestCase):
             ensemble_trainer=EnsembleTrainer(
                 DecisionTreeClassifier(max_depth=1),
                 centroid_picker=RandomCentroidPicker(),
-                sampling=ExponentialWeighting(precision=1, power=2)
+                sampling=ExponentialWeigher(precision=1, power=2)
             ),
-            expert_weighting=ExponentialWeighting(precision=1, power=2),
+            expert_weighting=ExponentialWeigher(precision=1, power=2),
             preprocessor=MinMaxScaler(),
             use_probs=True,
             use_competences=False

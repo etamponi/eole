@@ -5,14 +5,14 @@ __author__ = 'Emanuele'
 
 class EnsembleGate(object):
 
-    def __init__(self, experts, expert_weighting):
+    def __init__(self, experts, expert_weigher):
         self.experts = experts
-        self.expert_weighting = expert_weighting
+        self.expert_weigher = expert_weigher
 
     def competence_matrix(self, instances):
         ret = numpy.zeros((len(instances), len(self.experts)))
         for j, e in enumerate(self.experts):
-            ret[:, j] = self.expert_weighting.apply_to_all(instances, e.centroid)
+            ret[:, j] = self.expert_weigher.get_weights(instances, e.centroid)
         return ret
 
     def probability_matrix(self, instances):

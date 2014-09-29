@@ -20,7 +20,7 @@ class EnsembleGateTest(unittest.TestCase):
                 LocalExpert(FakeEstimator(n_labels=2, label_cycle=[1, 1], prob=0.9), None),
                 LocalExpert(FakeEstimator(n_labels=2, label_cycle=[1, 0], prob=0.6), None)
             ],
-            expert_weighting=InverseDistance(1, 1)
+            expert_weigher=InverseDistance(1, 1)
         )
         self.gate.experts[0].centroid = numpy.asarray([0, 0])
         self.gate.experts[1].centroid = numpy.asarray([-1, 0])

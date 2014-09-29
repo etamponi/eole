@@ -1,26 +1,26 @@
 import numpy
 from scipy.spatial import distance
 
-from eole.trainable import Trainable
+from eole.interfaces import Weigher
 
 
 __author__ = 'Emanuele'
 
 
-class InverseDistance(Trainable):
-
-    def train(self, instances):
-        pass
+class InverseDistance(Weigher):
 
     def __init__(self, power, offset):
         self.power = power
         self.offset = offset
 
-    def apply_to(self, x, c):
-        return 1.0 / (distance.euclidean(x, c) + self.offset)**self.power
+    def train(self, instances):
+        pass
 
-    def apply_to_all(self, instances, c):
-        return [self.apply_to(x, c) for x in instances]
+    def _get_weight(self, x, centroid):
+        return 1.0 / (distance.euclidean(x, centroid) + self.offset)**self.power
+
+    def get_weights(self, instances, centroid):
+        return [self._get_weight(x, centroid) for x in instances]
 
 
 class FakeEstimator(object):

@@ -5,7 +5,7 @@ from sklearn.tree.tree import DecisionTreeClassifier
 
 from eole.generalized_bootstrap import GeneralizedBootstrap
 from eole.local_expert import LocalExpert
-from eole.exponential_weighting import ExponentialWeighting
+from eole.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele'
@@ -16,7 +16,7 @@ class LocalExpertTest(unittest.TestCase):
     def test_fit(self):
         lt = LocalExpert(
             base_estimator=DecisionTreeClassifier(),
-            sampling=ExponentialWeighting(precision=1, power=2)
+            sampler=ExponentialWeigher(precision=1, power=2)
         )
         instances = numpy.concatenate((numpy.random.randn(10, 2) - 1, numpy.random.randn(10, 2) + 1))
         labels = numpy.concatenate((numpy.zeros(10), numpy.ones(10)))
@@ -29,11 +29,11 @@ class LocalExpertTest(unittest.TestCase):
     def test_repeatability_and_randomness(self):
         lt1 = LocalExpert(
             base_estimator=DecisionTreeClassifier(max_features="log2"),
-            sampling=GeneralizedBootstrap(500, ExponentialWeighting(1, 2))
+            sampler=GeneralizedBootstrap(500, ExponentialWeigher(1, 2))
         )
         lt2 = LocalExpert(
             base_estimator=DecisionTreeClassifier(max_features="log2"),
-            sampling=GeneralizedBootstrap(500, ExponentialWeighting(1, 2))
+            sampler=GeneralizedBootstrap(500, ExponentialWeigher(1, 2))
         )
         centroid = numpy.zeros(10)
         instances = numpy.random.randn(10, 10)

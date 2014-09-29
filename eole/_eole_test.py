@@ -7,7 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from eole import EOLE
 from eole.centroid_picker import RandomCentroidPicker
 from eole.ensemble_trainer import EnsembleTrainer
-from eole.exponential_weighting import ExponentialWeighting
+from eole.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele Tamponi'
@@ -21,9 +21,9 @@ class EOLETest(unittest.TestCase):
             ensemble_trainer=EnsembleTrainer(
                 DecisionTreeClassifier(max_depth=1, max_features="auto"),
                 centroid_picker=RandomCentroidPicker(),
-                sampling=ExponentialWeighting(precision=1, power=2)
+                sampling=ExponentialWeigher(precision=1, power=2)
             ),
-            expert_weighting=ExponentialWeighting(precision=1, power=2),
+            expert_weighting=ExponentialWeigher(precision=1, power=2),
             preprocessor=MinMaxScaler(),
             use_probs=False,
             use_competences=False
@@ -39,9 +39,9 @@ class EOLETest(unittest.TestCase):
             ensemble_trainer=EnsembleTrainer(
                 DecisionTreeClassifier(max_depth=1, max_features="auto"),
                 centroid_picker=RandomCentroidPicker(),
-                sampling=ExponentialWeighting(precision=1, power=2)
+                sampling=ExponentialWeigher(precision=1, power=2)
             ),
-            expert_weighting=ExponentialWeighting(precision=1, power=2),
+            expert_weighting=ExponentialWeigher(precision=1, power=2),
             preprocessor=None,
             use_probs=False,
             use_competences=False

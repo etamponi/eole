@@ -1,12 +1,12 @@
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.tree.tree import DecisionTreeClassifier
 
-from analysis.arff_utils import ArffLoader
+from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
 from eole import EOLE
 from eole.centroid_picker import RandomCentroidPicker
 from eole.ensemble_trainer import EnsembleTrainer
-from eole.exponential_weighting import ExponentialWeighting
+from eole.exponential_weigher import ExponentialWeigher
 from eole.generalized_bootstrap import GeneralizedBootstrap
 
 
@@ -84,10 +84,10 @@ def make_bootstrap_ensemble(precision, sample_percent):
             centroid_picker=RandomCentroidPicker(),
             sampling=GeneralizedBootstrap(
                 sample_percent=sample_percent,
-                weighting=ExponentialWeighting(precision=precision, power=1)
+                weigher=ExponentialWeigher(precision=precision, power=1)
             )
         ),
-        expert_weighting=ExponentialWeighting(precision=precision, power=1),
+        expert_weighting=ExponentialWeigher(precision=precision, power=1),
         preprocessor=MinMaxScaler(),
         use_probs=False,
         use_competences=False
@@ -100,9 +100,9 @@ def make_exponential_ensemble(precision):
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
             centroid_picker=RandomCentroidPicker(),
-            sampling=ExponentialWeighting(precision=precision, power=1)
+            sampling=ExponentialWeigher(precision=precision, power=1)
         ),
-        expert_weighting=ExponentialWeighting(precision=precision, power=1),
+        expert_weighting=ExponentialWeigher(precision=precision, power=1),
         preprocessor=MinMaxScaler(),
         use_probs=False,
         use_competences=False

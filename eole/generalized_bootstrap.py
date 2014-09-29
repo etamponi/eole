@@ -1,27 +1,21 @@
 import numpy
 
-from eole.trainable import Trainable
+from eole.interfaces import Sampler
 
 
 __author__ = 'Emanuele'
 
 
-class GeneralizedBootstrap(Trainable):
+class GeneralizedBootstrap(Sampler):
 
-    def train(self, instances):
-        self.weighting.train(instances)
-
-    def __init__(self, sample_percent, weighting):
+    def __init__(self, sample_percent, weigher):
+        super(GeneralizedBootstrap, self).__init__(weigher)
         self.sample_percent = float(sample_percent) / 100
-        self.weighting = weighting
 
     def generate_sample(self, instances, centroid):
         size = int(len(instances) * self.sample_percent)
-        choices = numpy.random.choice(
-            len(instances),
-            size=size,
-            replace=True,
-            p=self.weighting.apply_to_all(instances, centroid, normalize=True)
-        )
+        probs = self.get_weights(instances, centroid)
+        probs = probs / probs.sum()
+        choices = numpy.random.choice(len(instances), size=size, replace=True, p=probs)
         sample = numpy.array([sum(choices == i) for i in range(len(instances))])
         return sample
