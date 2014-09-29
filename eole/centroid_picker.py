@@ -27,8 +27,8 @@ class AlmostRandomCentroidPicker(object):
         ret = [instances[numpy.random.choice(len(instances), p=p)]]
         while len(ret) < n_centroids:
             distances = numpy.asarray([distance.euclidean(x, ret[-1]) for x in instances])
-            distances = distances / distances.sum()
-            p = p * numpy.log(1.0 + distances)
+            # distances = distances / distances.sum()
+            p = p * numpy.log(1.0 + 0.01 * distances)
             p = p / p.sum()
             ret.append(instances[numpy.random.choice(len(instances), p=p)])
         return numpy.asarray(ret)

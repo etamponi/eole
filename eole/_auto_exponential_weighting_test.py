@@ -17,6 +17,6 @@ class AutoExponentialWeightingTest(unittest.TestCase):
             [+1.3, +0.5]
         ])
         expected_variances = numpy.diag(numpy.asarray([0.56, 1.50]))
-        weighting = AutoExponentialWeighting()
+        weighting = AutoExponentialWeighting(scale=1)
         weighting.train(instances)
         numpy.testing.assert_array_almost_equal(expected_variances, weighting.variance_matrix)
