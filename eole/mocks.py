@@ -1,5 +1,4 @@
 import numpy
-from scipy.spatial import distance
 
 from eole.interfaces import Weigher
 
@@ -17,7 +16,7 @@ class InverseDistance(Weigher):
         pass
 
     def _get_weight(self, x, centroid):
-        return 1.0 / (distance.euclidean(x, centroid) + self.offset)**self.power
+        return 1.0 / (numpy.linalg.norm(x - centroid) + self.offset)**self.power
 
     def get_weights(self, instances, centroid):
         return [self._get_weight(x, centroid) for x in instances]

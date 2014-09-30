@@ -3,6 +3,7 @@ import unittest
 import numpy
 
 from eole import matrix_utils
+from eole.interfaces import Weigher
 
 
 __author__ = 'Emanuele'
@@ -107,3 +108,26 @@ class MatrixUtilsTest(unittest.TestCase):
             ["b", "b", "a"]
         ])
         numpy.testing.assert_array_equal(expected, matrix_utils.prediction_matrix(matrix, labels))
+
+    def test_competence_matrix(self):
+        class FakeWeigher(Weigher):
+            def get_weights(self, instances, centroid):
+                # For testing purposes. Returns centroid[0] * (instances.index(x)+1) as weight for each instance x
+                return numpy.asarray([centroid[0] * (i+1) for i in range(len(instances))])
+
+            def train(self, instances):
+                pass
+        weigher = FakeWeigher()
+        instances = numpy.random.randn(5, 3)
+        centroids = numpy.asarray([
+            [1.0, 0.0, 0.0],
+            [-2., 0.0, 0.0]
+        ])
+        expected_matrix = numpy.asarray([
+            [1.0, -2.0],
+            [2.0, -4.0],
+            [3.0, -6.0],
+            [4.0, -8.0],
+            [5.0, -10.]
+        ])
+        numpy.testing.assert_array_equal(expected_matrix, matrix_utils.competence_matrix(instances, centroids, weigher))

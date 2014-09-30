@@ -50,3 +50,10 @@ def prediction_matrix(probability_matrix, labels):
     for row in probability_matrix:
         pm.append(labels[row.argmax(axis=1)])
     return numpy.asarray(pm)
+
+
+def competence_matrix(instances, centroids, weigher):
+    cm = numpy.zeros((len(instances), len(centroids)))
+    for j, centroid in enumerate(centroids):
+        cm[:, j] = weigher.get_weights(instances, centroid)
+    return cm
