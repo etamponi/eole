@@ -111,49 +111,58 @@ class MatrixUtilsTest(unittest.TestCase):
 
     def test_competence_matrix(self):
         weigher = FakeWeigher()
-        instances = numpy.random.randn(5, 3)
+        instances = numpy.zeros((5, 3))
+        instances[:, 0] = numpy.asarray([3.0, -1., 2.0, 1.0, 5.0])
         centroids = numpy.asarray([
-            [1.0, 0.0, 0.0],
+            [1.5, 0.0, 0.0],
             [-2., 0.0, 0.0]
         ])
         expected_matrix = numpy.asarray([
-            [1.0, -2.0],
-            [2.0, -4.0],
-            [3.0, -6.0],
-            [4.0, -8.0],
-            [5.0, -10.]
+            [4.5, -6.0],
+            [-1.5, 2.0],
+            [3.0, -4.0],
+            [1.5, -2.0],
+            [7.5, -10.]
         ])
         numpy.testing.assert_array_equal(expected_matrix, matrix_utils.competence_matrix(instances, centroids, weigher))
 
     def test_probability_matrix(self):
-        instances = numpy.random.randn(4, 3)
-        experts = [FakeExpert(label=0), FakeExpert(label=1)]
+        instances = numpy.asarray([
+            [0.1, 0.4, 0.6],
+            [0.9, 1.1, 0.9],
+            [0.2, 0.3, 1.7],
+            [0.5, 1.5, 1.5]
+        ])
+        experts = [FakeExpert(start=0), FakeExpert(start=1)]
         n_labels = 2
         expected_matrix = numpy.asarray([
-            [[0.7, 0.3], [0.3, 0.7]],
-            [[0.7, 0.3], [0.3, 0.7]],
-            [[0.7, 0.3], [0.3, 0.7]],
-            [[0.7, 0.3], [0.3, 0.7]],
+            [[0.2, 0.8], [0.4, 0.6]],
+            [[.45, .55], [.55, .45]],
+            [[0.4, 0.6], [.15, .85]],
+            [[.25, .75], [0.5, 0.5]],
         ])
-        numpy.testing.assert_array_equal(expected_matrix, matrix_utils.probability_matrix(instances, experts, n_labels))
+        numpy.testing.assert_array_almost_equal(
+            expected_matrix, matrix_utils.probability_matrix(instances, experts, n_labels)
+        )
 
 
 class FakeWeigher(Weigher):
     def get_weights(self, instances, centroid):
-        # For testing purposes. Returns centroid[0] * (instances.index(x)+1) as weight for each instance x
-        return numpy.asarray([centroid[0] * (i+1) for i in range(len(instances))])
+        # For testing purposes. Returns centroid[0] * x[0] as weight for each instance x
+        return numpy.asarray([centroid[0] * x[0] for x in instances])
 
     def train(self, instances):
         pass
 
 
 class FakeExpert(object):
-    def __init__(self, label):
-        self.label = label
+    def __init__(self, start):
+        self.start = start
 
     def predict_probs(self, instances):
-        if self.label == 0:
-            prob = [0.7, 0.3]
-        else:
-            prob = [0.3, 0.7]
-        return numpy.asarray([prob for _ in range(len(instances))])
+        # For testing purposes. Uses features (start, start+1) as probabilities (after normalization)
+        return numpy.asarray([self._fake_prob(x) for x in instances])
+
+    def _fake_prob(self, x):
+        p = x[[self.start, self.start+1]]
+        return p / p.sum()
