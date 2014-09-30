@@ -15,7 +15,7 @@ class Report(object):
 
     def __init__(self, experiment):
         self.experiment = deepcopy(experiment)
-        self.sample_size = experiment.folds * experiment.repetitions
+        self.sample_size = experiment.n_folds * experiment.n_repetitions
         shape = (self.sample_size, experiment.ensemble.n_experts)
         self.accuracy_sample = numpy.zeros(shape)
         self.precision_sample = numpy.zeros(shape)
@@ -24,14 +24,14 @@ class Report(object):
         self.current_run = 0
 
     def analyze_run(self, prediction_matrix, labels):
-        for i in range(self.accuracy_sample.shape[1]):
-            predictions = prediction_matrix[:, i]
-            self.accuracy_sample[self.current_run][i] = accuracy_score(labels, predictions)
+        for j in range(self.accuracy_sample.shape[1]):
+            predictions = prediction_matrix[:, j]
+            self.accuracy_sample[self.current_run][j] = accuracy_score(labels, predictions)
 
             precision, recall, f1 = precision_recall_f1_score(labels, predictions)
-            self.precision_sample[self.current_run][i] = precision
-            self.recall_sample[self.current_run][i] = recall
-            self.f1_sample[self.current_run][i] = f1
+            self.precision_sample[self.current_run][j] = precision
+            self.recall_sample[self.current_run][j] = recall
+            self.f1_sample[self.current_run][j] = f1
         self.current_run += 1
 
     def synthesis(self):

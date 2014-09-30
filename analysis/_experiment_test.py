@@ -15,7 +15,7 @@ class ExperimentTest(unittest.TestCase):
             name="test_experiment",
             ensemble=FakeEOLE(n_experts=5),
             dataset_loader=FakeLoader(n=100, n_features=5, n_labels=3),
-            folds=2, repetitions=10
+            n_folds=2, n_repetitions=10
         )
 
     def test_run_returns_report(self):
@@ -24,7 +24,12 @@ class ExperimentTest(unittest.TestCase):
 
     def test_each_repetition_is_different(self):
         report = self.experiment.run()
-        self.assertFalse(numpy.array_equal(report.accuracy_sample[0], report.accuracy_sample[10]))
+        self.assertFalse(numpy.array_equal(report.accuracy_sample[0], report.accuracy_sample[2]))
+
+    def test_each_run_is_equal(self):
+        report1 = self.experiment.run()
+        report2 = self.experiment.run()
+        numpy.testing.assert_array_equal(report1.accuracy_sample, report2.accuracy_sample)
 
 
 class FakeEOLE(object):
@@ -50,4 +55,5 @@ class FakeLoader(object):
         self.n_labels = n_labels
 
     def load_dataset(self):
+        numpy.random.seed(1)
         return numpy.random.randn(self.n, self.n_features), numpy.random.choice(self.n_labels, size=self.n)

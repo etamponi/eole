@@ -3,7 +3,7 @@ from sklearn.tree.tree import DecisionTreeClassifier
 
 from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
-from core.centroid_picker import RandomCentroidPicker
+from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
 from core.ensemble_trainer import EnsembleTrainer
 from core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
@@ -48,17 +48,19 @@ def main():
         "zoo"
     ]
 
+    centroid_picker = AlmostRandomCentroidPicker()
+
     ensembles = [
-        ("random_forest", make_bootstrap_ensemble(0, 100)),
-        ("random_eole_1", make_exponential_ensemble(1)),
-        ("random_eole_2", make_exponential_ensemble(2)),
-        ("random_eole_3", make_exponential_ensemble(3)),
-        ("random_eole_4", make_exponential_ensemble(4)),
-        ("random_eole_5", make_exponential_ensemble(5))
+        ("random_forest", make_random_forest()),
+        ("exponential_eole_1", make_eole(centroid_picker, ExponentialWeigher(1, 2))),
+        ("exponential_eole_2", make_eole(centroid_picker, ExponentialWeigher(2, 2))),
+        ("exponential_eole_3", make_eole(centroid_picker, ExponentialWeigher(3, 2))),
+        ("exponential_eole_4", make_eole(centroid_picker, ExponentialWeigher(4, 2))),
+        ("exponential_eole_5", make_eole(centroid_picker, ExponentialWeigher(5, 2)))
     ]
 
-    n_folds = 5
-    repetitions = 20
+    n_folds = 10
+    repetitions = 10
 
     for ds_name in ds_names:
         print "Start experiments on: {}".format(ds_name)
@@ -69,40 +71,40 @@ def main():
                 name=exp_name,
                 ensemble=ensemble,
                 dataset_loader=ArffLoader("datasets/{}.arff".format(ds_name)),
-                folds=n_folds,
-                repetitions=repetitions
+                n_folds=n_folds,
+                n_repetitions=repetitions
             )
             report = experiment.run()
             report.dump("reports/")
 
 
-def make_bootstrap_ensemble(precision, sample_percent):
+def make_random_forest():
     return EOLE(
         n_experts=100,
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
             centroid_picker=RandomCentroidPicker(),
             weigher_sampler=GeneralizedBootstrap(
-                sample_percent=sample_percent,
-                weigher=ExponentialWeigher(precision=precision, power=1)
+                sample_percent=100,
+                weigher=ExponentialWeigher(precision=0, power=1)
             )
         ),
-        preprocessor=MinMaxScaler(),
+        preprocessor=None,
         use_probs=False,
         use_competences=False
     )
 
 
-def make_exponential_ensemble(precision):
+def make_eole(centroid_picker, weigher_sampler):
     return EOLE(
         n_experts=100,
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
-            centroid_picker=RandomCentroidPicker(),
-            weigher_sampler=ExponentialWeigher(precision=precision, power=1)
+            centroid_picker=centroid_picker,
+            weigher_sampler=weigher_sampler
         ),
         preprocessor=MinMaxScaler(),
-        use_probs=False,
+        use_probs=True,
         use_competences=False
     )
 

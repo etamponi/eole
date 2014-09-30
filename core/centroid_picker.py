@@ -1,5 +1,4 @@
 import numpy
-from scipy.spatial import distance
 from sklearn.neighbors.kde import KernelDensity
 
 
@@ -14,7 +13,7 @@ class RandomCentroidPicker(object):
     def pick(self, instances, n_centroids):
         assert n_centroids <= len(instances)
         choices = numpy.random.choice(len(instances), size=n_centroids, replace=False)
-        return numpy.asarray([instances[i] for i in choices])
+        return instances[choices]
 
 
 class AlmostRandomCentroidPicker(object):
@@ -26,9 +25,8 @@ class AlmostRandomCentroidPicker(object):
         p = numpy.ones(len(instances)) / len(instances)
         ret = [instances[numpy.random.choice(len(instances), p=p)]]
         while len(ret) < n_centroids:
-            distances = numpy.asarray([distance.euclidean(x, ret[-1]) for x in instances])
-            # distances = distances / distances.sum()
-            p = p * numpy.log(1.0 + 0.01 * distances)
+            distances = numpy.asarray([numpy.linalg.norm(x - ret[-1]) for x in instances])
+            p = p * numpy.log(1.0 + distances)
             p = p / p.sum()
             ret.append(instances[numpy.random.choice(len(instances), p=p)])
         return numpy.asarray(ret)
@@ -45,8 +43,7 @@ class KernelDensityCentroidPicker(object):
         p = p / p.sum()
         ret = [instances[numpy.random.choice(len(instances), p=p)]]
         while len(ret) < n_centroids:
-            distances = numpy.asarray([distance.euclidean(x, ret[-1]) for x in instances])
-            distances = distances / distances.sum()
+            distances = numpy.asarray([numpy.linalg.norm(x - ret[-1]) for x in instances])
             p = p * numpy.log(1.0 + distances)
             p = p / p.sum()
             ret.append(instances[numpy.random.choice(len(instances), p=p)])
@@ -64,8 +61,7 @@ class DeterministicCentroidPicker(object):
         p = p / p.sum()
         ret = [instances[p.argmax()]]
         while len(ret) < n_centroids:
-            distances = numpy.asarray([distance.euclidean(x, ret[-1]) for x in instances])
-            distances = distances / distances.sum()
+            distances = numpy.asarray([numpy.linalg.norm(x - ret[-1]) for x in instances])
             p = p * numpy.log(1.0 + distances)
             p = p / p.sum()
             ret.append(instances[p.argmax()])

@@ -1,5 +1,4 @@
 import numpy
-from scipy.spatial import distance
 
 from core.interfaces import BaseWeigher
 
@@ -18,7 +17,7 @@ class ExponentialWeigher(BaseWeigher):
         pass
 
     def _get_weight(self, x, centroid):
-        return numpy.exp(-0.5 * self.precision * distance.euclidean(x, centroid)**self.power)
+        return numpy.exp(-0.5 * self.precision * numpy.linalg.norm(x - centroid)**self.power)
 
     def get_weights(self, instances, centroid):
         return numpy.asarray([self._get_weight(x, centroid) for x in instances])
