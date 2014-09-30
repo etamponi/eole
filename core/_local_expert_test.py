@@ -3,9 +3,9 @@ import unittest
 import numpy
 from sklearn.tree.tree import DecisionTreeClassifier
 
-from eole.generalized_bootstrap import GeneralizedBootstrap
-from eole.local_expert import LocalExpert
-from eole.exponential_weigher import ExponentialWeigher
+from core.generalized_bootstrap import GeneralizedBootstrap
+from core.local_expert import LocalExpert
+from core.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele'

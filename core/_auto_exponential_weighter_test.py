@@ -2,7 +2,7 @@ import unittest
 
 import numpy
 
-from eole.auto_exponential_weigher import AutoExponentialWeigher
+from core.auto_exponential_weigher import AutoExponentialWeigher
 
 
 __author__ = 'Emanuele Tamponi'

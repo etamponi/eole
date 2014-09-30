@@ -3,9 +3,9 @@ import unittest
 import numpy
 from sklearn.tree.tree import DecisionTreeClassifier
 
-from eole.centroid_picker import RandomCentroidPicker
-from eole.ensemble_trainer import EnsembleTrainer
-from eole.exponential_weigher import ExponentialWeigher
+from core.centroid_picker import RandomCentroidPicker
+from core.ensemble_trainer import EnsembleTrainer
+from core.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele'

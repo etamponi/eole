@@ -1,6 +1,6 @@
 import numpy
 
-from eole.interfaces import Weigher
+from core.interfaces import Weigher
 
 
 __author__ = 'Emanuele Tamponi'

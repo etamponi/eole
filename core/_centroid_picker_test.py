@@ -2,7 +2,7 @@ import unittest
 
 import numpy
 
-from eole.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker, \
+from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker, \
     KernelDensityCentroidPicker, DeterministicCentroidPicker
 
 

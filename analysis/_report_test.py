@@ -5,7 +5,7 @@ import numpy
 
 from analysis.experiment import Experiment
 from analysis.report import Report, ReportNotReady, ReportDirectoryError, ReportFileAlreadyExists
-from eole import EOLE
+from core.eole import EOLE
 
 
 __author__ = 'Emanuele Tamponi'

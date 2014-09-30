@@ -2,8 +2,8 @@ import unittest
 
 import numpy
 
-from eole.deterministic_sampler import DeterministicSampler
-from eole.exponential_weigher import ExponentialWeigher
+from core.deterministic_sampler import DeterministicSampler
+from core.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele Tamponi'

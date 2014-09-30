@@ -1,6 +1,6 @@
 import numpy
 
-from eole.interfaces import Sampler
+from core.interfaces import Sampler
 
 
 __author__ = 'Emanuele'

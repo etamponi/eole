@@ -1,7 +1,7 @@
 import numpy
 from scipy.spatial import distance
 
-from eole.interfaces import Weigher
+from core.interfaces import Weigher
 
 
 __author__ = 'Emanuele'

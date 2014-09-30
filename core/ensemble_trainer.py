@@ -1,6 +1,6 @@
 import sklearn
 
-from eole.local_expert import LocalExpert
+from core.local_expert import LocalExpert
 
 
 __author__ = 'Emanuele'

@@ -2,8 +2,8 @@ import unittest
 
 import numpy
 
-from eole.exponential_weigher import ExponentialWeigher
-from eole.generalized_bootstrap import GeneralizedBootstrap
+from core.exponential_weigher import ExponentialWeigher
+from core.generalized_bootstrap import GeneralizedBootstrap
 
 
 __author__ = 'Emanuele'
@@ -12,9 +12,8 @@ __author__ = 'Emanuele'
 class GeneralizedBootstrapTest(unittest.TestCase):
 
     def setUp(self):
-        self.centroid = [0, 0]
-        weighting = ExponentialWeigher(precision=1, power=2)
-        self.gb = GeneralizedBootstrap(sample_percent=500, weigher=weighting)
+        self.centroid = numpy.asarray([0, 0])
+        self.gb = GeneralizedBootstrap(sample_percent=500, weigher=ExponentialWeigher(precision=1, power=2))
         self.instances = numpy.random.rand(10, 2)
 
     def test_generate_sample(self):

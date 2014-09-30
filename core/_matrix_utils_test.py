@@ -2,8 +2,8 @@ import unittest
 
 import numpy
 
-from eole import matrix_utils
-from eole.interfaces import Weigher
+from core import matrix_utils
+from core.interfaces import Weigher
 
 
 __author__ = 'Emanuele'

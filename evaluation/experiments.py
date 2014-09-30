@@ -3,11 +3,11 @@ from sklearn.tree.tree import DecisionTreeClassifier
 
 from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
-from eole import EOLE
-from eole.centroid_picker import RandomCentroidPicker
-from eole.ensemble_trainer import EnsembleTrainer
-from eole.exponential_weigher import ExponentialWeigher
-from eole.generalized_bootstrap import GeneralizedBootstrap
+from core.centroid_picker import RandomCentroidPicker
+from core.ensemble_trainer import EnsembleTrainer
+from core.eole import EOLE
+from core.exponential_weigher import ExponentialWeigher
+from core.generalized_bootstrap import GeneralizedBootstrap
 
 
 __author__ = 'Emanuele Tamponi'

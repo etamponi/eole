@@ -1,9 +1,9 @@
 import numpy
 
-from eole import matrix_utils
+from core import matrix_utils
 
 
-__author__ = 'Emanuele'
+__author__ = 'Emanuele Tamponi'
 
 
 class EOLE(object):

@@ -4,10 +4,10 @@ import numpy
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.tree import DecisionTreeClassifier
 
-from eole import EOLE
-from eole.centroid_picker import RandomCentroidPicker
-from eole.ensemble_trainer import EnsembleTrainer
-from eole.exponential_weigher import ExponentialWeigher
+from core.centroid_picker import RandomCentroidPicker
+from core.ensemble_trainer import EnsembleTrainer
+from core.eole import EOLE
+from core.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele Tamponi'
