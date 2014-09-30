@@ -16,4 +16,5 @@ class DeterministicSamplerTest(unittest.TestCase):
         centroid = instances[0]
         sampler = DeterministicSampler(sample_percent=1000, weigher=ExponentialWeigher(1, 2))
         sample = sampler.get_sample_weights(instances, centroid)
+        self.assertEqual(10, len(sample))
         self.assertTrue(abs(sample.sum() - 100) <= 1)

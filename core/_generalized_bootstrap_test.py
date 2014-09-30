@@ -14,12 +14,12 @@ class GeneralizedBootstrapTest(unittest.TestCase):
     def setUp(self):
         self.centroid = numpy.asarray([0, 0])
         self.gb = GeneralizedBootstrap(sample_percent=500, weigher=ExponentialWeigher(precision=1, power=2))
-        self.instances = numpy.random.rand(10, 2)
+        self.instances = numpy.random.rand(100, 2)
 
     def test_get_sample_weights(self):
         sample = self.gb.get_sample_weights(self.instances, self.centroid)
-        self.assertEqual(10, len(sample))
-        self.assertEqual(50, sample.sum())
+        self.assertEqual(100, len(sample))
+        self.assertEqual(500, sample.sum())
 
     def test_repeatability(self):
         numpy.random.seed(1)

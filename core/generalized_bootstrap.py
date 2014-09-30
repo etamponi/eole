@@ -17,5 +17,5 @@ class GeneralizedBootstrap(BaseSampler):
         probs = self.get_weights(instances, centroid)
         probs = probs / probs.sum()
         choices = numpy.random.choice(len(instances), size=size, replace=True, p=probs)
-        sample = numpy.array([sum(choices == i) for i in range(len(instances))])
+        sample = numpy.array([(choices == i).sum() for i in range(len(instances))])
         return sample
