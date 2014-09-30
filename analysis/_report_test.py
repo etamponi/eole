@@ -15,7 +15,7 @@ class ReportTest(unittest.TestCase):
 
     def setUp(self):
         self.experiment = Experiment(
-            "test_experiment", EOLE(3, None, None, None, False, False), None, folds=2, repetitions=5
+            "test_experiment", EOLE(3, None, None, False, False), None, folds=2, repetitions=5
         )
         self.report = Report(self.experiment)
         self.prediction_matrix = numpy.asarray([

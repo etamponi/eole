@@ -45,17 +45,17 @@ def sharpen_probability_matrix(matrix):
     return sm
 
 
-def prediction_matrix(probability_matrix, labels):
+def prediction_matrix(prob_matrix, labels):
     pm = []
-    for row in probability_matrix:
+    for row in prob_matrix:
         pm.append(labels[row.argmax(axis=1)])
     return numpy.asarray(pm)
 
 
-def competence_matrix(instances, centroids, weigher):
-    cm = numpy.zeros((len(instances), len(centroids)))
-    for j, centroid in enumerate(centroids):
-        cm[:, j] = weigher.get_weights(instances, centroid)
+def competence_matrix(instances, experts):
+    cm = numpy.zeros((len(instances), len(experts)))
+    for j, expert in enumerate(experts):
+        cm[:, j] = expert.competence(instances)
     return cm
 
 

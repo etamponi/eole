@@ -12,7 +12,7 @@ class DeterministicSampler(BaseSampler):
         super(DeterministicSampler, self).__init__(weigher)
         self.sample_percent = float(sample_percent) / 100
 
-    def generate_sample(self, instances, centroid):
+    def get_sample_weights(self, instances, centroid):
         target_size = int(len(instances) * self.sample_percent)
         weights = self.get_weights(instances, centroid)
         mul_a = 0

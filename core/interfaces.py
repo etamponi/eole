@@ -10,15 +10,27 @@ class SamplerWeigher(object):
     def train(self, instances):
         pass
 
+    @abc.abstractmethod
+    def get_weights(self, instances, centroid):
+        pass
+
+    @abc.abstractmethod
+    def get_sample_weights(self, instances, centroid):
+        pass
+
 
 class BaseWeigher(SamplerWeigher):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
+    def train(self, instances):
+        pass
+
+    @abc.abstractmethod
     def get_weights(self, instances, centroid):
         pass
 
-    def generate_sample(self, instances, centroid):
+    def get_sample_weights(self, instances, centroid):
         return self.get_weights(instances, centroid)
 
 
@@ -35,5 +47,5 @@ class BaseSampler(SamplerWeigher):
         return self.weigher.get_weights(instances, centroid)
 
     @abc.abstractmethod
-    def generate_sample(self, instances, centroid):
+    def get_sample_weights(self, instances, centroid):
         pass

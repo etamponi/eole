@@ -12,7 +12,7 @@ class GeneralizedBootstrap(BaseSampler):
         super(GeneralizedBootstrap, self).__init__(weigher)
         self.sample_percent = float(sample_percent) / 100
 
-    def generate_sample(self, instances, centroid):
+    def get_sample_weights(self, instances, centroid):
         size = int(len(instances) * self.sample_percent)
         probs = self.get_weights(instances, centroid)
         probs = probs / probs.sum()

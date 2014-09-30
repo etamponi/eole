@@ -23,7 +23,7 @@ class ExponentialWeigher(BaseWeigher):
     def get_weights(self, instances, centroid):
         return numpy.asarray([self._get_weight(x, centroid) for x in instances])
 
-    def generate_sample(self, instances, centroid):
+    def get_sample_weights(self, instances, centroid):
         sample = self.get_weights(instances, centroid)
         if self.sample_percent is not None:
             choices = numpy.random.choice(len(instances), size=int(len(instances)*self.sample_percent), replace=False)

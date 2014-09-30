@@ -3,7 +3,6 @@ import unittest
 import numpy
 
 from core import matrix_utils
-from core.interfaces import BaseWeigher
 
 
 __author__ = 'Emanuele'
@@ -110,13 +109,9 @@ class MatrixUtilsTest(unittest.TestCase):
         numpy.testing.assert_array_equal(expected, matrix_utils.prediction_matrix(matrix, labels))
 
     def test_competence_matrix(self):
-        weigher = FakeWeigher()
         instances = numpy.zeros((5, 3))
         instances[:, 0] = numpy.asarray([3.0, -1., 2.0, 1.0, 5.0])
-        centroids = numpy.asarray([
-            [1.5, 0.0, 0.0],
-            [-2., 0.0, 0.0]
-        ])
+        experts = [FakeLocalExpert(start=0, factor=1.5), FakeLocalExpert(start=1, factor=-2.0)]
         expected_matrix = numpy.asarray([
             [4.5, -6.0],
             [-1.5, 2.0],
@@ -124,7 +119,7 @@ class MatrixUtilsTest(unittest.TestCase):
             [1.5, -2.0],
             [7.5, -10.]
         ])
-        numpy.testing.assert_array_equal(expected_matrix, matrix_utils.competence_matrix(instances, centroids, weigher))
+        numpy.testing.assert_array_equal(expected_matrix, matrix_utils.competence_matrix(instances, experts))
 
     def test_probability_matrix(self):
         instances = numpy.asarray([
@@ -133,7 +128,7 @@ class MatrixUtilsTest(unittest.TestCase):
             [0.2, 0.3, 1.7],
             [0.5, 1.5, 1.5]
         ])
-        experts = [FakeExpert(start=0), FakeExpert(start=1)]
+        experts = [FakeLocalExpert(start=0, factor=1.5), FakeLocalExpert(start=1, factor=-2.0)]
         n_labels = 2
         expected_matrix = numpy.asarray([
             [[0.2, 0.8], [0.4, 0.6]],
@@ -146,22 +141,19 @@ class MatrixUtilsTest(unittest.TestCase):
         )
 
 
-class FakeWeigher(BaseWeigher):
-    def get_weights(self, instances, centroid):
-        # For testing purposes. Returns centroid[0] * x[0] as weight for each instance x
-        return numpy.asarray([centroid[0] * x[0] for x in instances])
+class FakeLocalExpert(object):
 
-    def train(self, instances):
-        pass
-
-
-class FakeExpert(object):
-    def __init__(self, start):
+    def __init__(self, start, factor):
         self.start = start
+        self.factor = factor
 
     def predict_probs(self, instances):
         # For testing purposes. Uses features (start, start+1) as probabilities (after normalization)
         return numpy.asarray([self._fake_prob(x) for x in instances])
+
+    def competence(self, instances):
+        # For testing purposes. Returns factor * x[0] as weight for each instance x
+        return numpy.asarray([self.factor * x[0] for x in instances])
 
     def _fake_prob(self, x):
         p = x[[self.start, self.start+1]]

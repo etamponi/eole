@@ -21,9 +21,8 @@ class EOLETest(unittest.TestCase):
             ensemble_trainer=EnsembleTrainer(
                 DecisionTreeClassifier(max_depth=1, max_features="auto"),
                 centroid_picker=RandomCentroidPicker(),
-                sampling=ExponentialWeigher(precision=1, power=2)
+                weigher_sampler=ExponentialWeigher(precision=1, power=2)
             ),
-            expert_weighting=ExponentialWeigher(precision=1, power=2),
             preprocessor=MinMaxScaler(),
             use_probs=False,
             use_competences=False
@@ -39,9 +38,8 @@ class EOLETest(unittest.TestCase):
             ensemble_trainer=EnsembleTrainer(
                 DecisionTreeClassifier(max_depth=1, max_features="auto"),
                 centroid_picker=RandomCentroidPicker(),
-                sampling=ExponentialWeigher(precision=1, power=2)
+                weigher_sampler=ExponentialWeigher(precision=1, power=2)
             ),
-            expert_weighting=ExponentialWeigher(precision=1, power=2),
             preprocessor=None,
             use_probs=False,
             use_competences=False

@@ -82,12 +82,11 @@ def make_bootstrap_ensemble(precision, sample_percent):
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
             centroid_picker=RandomCentroidPicker(),
-            sampling=GeneralizedBootstrap(
+            weigher_sampler=GeneralizedBootstrap(
                 sample_percent=sample_percent,
                 weigher=ExponentialWeigher(precision=precision, power=1)
             )
         ),
-        expert_weighting=ExponentialWeigher(precision=precision, power=1),
         preprocessor=MinMaxScaler(),
         use_probs=False,
         use_competences=False
@@ -100,9 +99,8 @@ def make_exponential_ensemble(precision):
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
             centroid_picker=RandomCentroidPicker(),
-            sampling=ExponentialWeigher(precision=precision, power=1)
+            weigher_sampler=ExponentialWeigher(precision=precision, power=1)
         ),
-        expert_weighting=ExponentialWeigher(precision=precision, power=1),
         preprocessor=MinMaxScaler(),
         use_probs=False,
         use_competences=False
