@@ -1,7 +1,6 @@
 import numpy
 
 from eole import matrix_utils
-from eole.ensemble_gate import EnsembleGate
 
 
 __author__ = 'Emanuele'
@@ -17,17 +16,16 @@ class EOLE(object):
         self.use_probs = use_probs
         self.use_competences = use_competences
         self.labels = None
-        self.gate = None
+        self.experts = None
+        self.centroids = None
 
     def train(self, instances, labels):
         self.labels, labels = numpy.unique(labels, return_inverse=True)
         if self.preprocessor is not None:
             instances = self.preprocessor.fit_transform(instances)
         self.expert_weighting.train(instances)
-        self.gate = EnsembleGate(
-            self.ensemble_trainer.train(self.n_experts, instances, labels),
-            self.expert_weighting
-        )
+        self.experts = self.ensemble_trainer.train(self.n_experts, instances, labels)
+        self.centroids = numpy.asarray([expert.centroid for expert in self.experts])
 
     def predict(self, instances):
         return matrix_utils.prediction_matrix(self.predict_probs(instances), self.labels)
@@ -36,8 +34,8 @@ class EOLE(object):
         if self.preprocessor is not None:
             instances = self.preprocessor.transform(instances)
 
-        competence_matrix = self.gate.competence_matrix(instances)
-        probability_matrix = self.gate.probability_matrix(instances)
+        competence_matrix = matrix_utils.competence_matrix(instances, self.centroids, self.expert_weighting)
+        probability_matrix = matrix_utils.probability_matrix(instances, self.experts, len(self.labels))
 
         # Sort the probability matrix in decreasing competence order
         indices = matrix_utils.order(competence_matrix)

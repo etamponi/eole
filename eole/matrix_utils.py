@@ -57,3 +57,10 @@ def competence_matrix(instances, centroids, weigher):
     for j, centroid in enumerate(centroids):
         cm[:, j] = weigher.get_weights(instances, centroid)
     return cm
+
+
+def probability_matrix(instances, experts, n_labels):
+    pm = numpy.zeros((len(instances), len(experts), n_labels))
+    for j, expert in enumerate(experts):
+        pm[:, j, :] = expert.predict_probs(instances)
+    return pm

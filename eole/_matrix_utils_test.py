@@ -125,6 +125,18 @@ class MatrixUtilsTest(unittest.TestCase):
         ])
         numpy.testing.assert_array_equal(expected_matrix, matrix_utils.competence_matrix(instances, centroids, weigher))
 
+    def test_probability_matrix(self):
+        instances = numpy.random.randn(4, 3)
+        experts = [FakeExpert(label=0), FakeExpert(label=1)]
+        n_labels = 2
+        expected_matrix = numpy.asarray([
+            [[0.7, 0.3], [0.3, 0.7]],
+            [[0.7, 0.3], [0.3, 0.7]],
+            [[0.7, 0.3], [0.3, 0.7]],
+            [[0.7, 0.3], [0.3, 0.7]],
+        ])
+        numpy.testing.assert_array_equal(expected_matrix, matrix_utils.probability_matrix(instances, experts, n_labels))
+
 
 class FakeWeigher(Weigher):
     def get_weights(self, instances, centroid):
@@ -133,3 +145,15 @@ class FakeWeigher(Weigher):
 
     def train(self, instances):
         pass
+
+
+class FakeExpert(object):
+    def __init__(self, label):
+        self.label = label
+
+    def predict_probs(self, instances):
+        if self.label == 0:
+            prob = [0.7, 0.3]
+        else:
+            prob = [0.3, 0.7]
+        return numpy.asarray([prob for _ in range(len(instances))])

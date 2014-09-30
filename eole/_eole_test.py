@@ -31,7 +31,7 @@ class EOLETest(unittest.TestCase):
         instances = numpy.random.randn(50, 10)
         labels = numpy.random.choice(["a", "b"], size=50)
         ensemble.train(instances, labels)
-        self.assertEqual(5, len(ensemble.gate.experts))
+        self.assertEqual(5, len(ensemble.experts))
 
     def test_eole_works_without_preprocessor(self):
         ensemble = EOLE(
@@ -49,4 +49,4 @@ class EOLETest(unittest.TestCase):
         instances = numpy.random.randn(50, 10)
         labels = numpy.random.choice(["a", "b"], size=50)
         ensemble.train(instances, labels)
-        self.assertEqual(5, len(ensemble.gate.experts))
+        self.assertEqual(5, len(ensemble.experts))
