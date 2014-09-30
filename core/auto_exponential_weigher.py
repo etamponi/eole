@@ -1,12 +1,12 @@
 import numpy
 
-from core.interfaces import Weigher
+from core.interfaces import BaseWeigher
 
 
 __author__ = 'Emanuele Tamponi'
 
 
-class AutoExponentialWeigher(Weigher):
+class AutoExponentialWeigher(BaseWeigher):
 
     def __init__(self, scale):
         self.precision_matrix = None

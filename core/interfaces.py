@@ -3,7 +3,7 @@ import abc
 __author__ = 'Emanuele Tamponi'
 
 
-class Trainable(object):
+class SamplerWeigher(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
@@ -11,7 +11,7 @@ class Trainable(object):
         pass
 
 
-class Weigher(Trainable):
+class BaseWeigher(SamplerWeigher):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
@@ -22,7 +22,7 @@ class Weigher(Trainable):
         return self.get_weights(instances, centroid)
 
 
-class Sampler(Trainable):
+class BaseSampler(SamplerWeigher):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, weigher):

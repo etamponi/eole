@@ -3,7 +3,7 @@ import unittest
 import numpy
 
 from core import matrix_utils
-from core.interfaces import Weigher
+from core.interfaces import BaseWeigher
 
 
 __author__ = 'Emanuele'
@@ -146,7 +146,7 @@ class MatrixUtilsTest(unittest.TestCase):
         )
 
 
-class FakeWeigher(Weigher):
+class FakeWeigher(BaseWeigher):
     def get_weights(self, instances, centroid):
         # For testing purposes. Returns centroid[0] * x[0] as weight for each instance x
         return numpy.asarray([centroid[0] * x[0] for x in instances])

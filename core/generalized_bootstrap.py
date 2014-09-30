@@ -1,12 +1,12 @@
 import numpy
 
-from core.interfaces import Sampler
+from core.interfaces import BaseSampler
 
 
 __author__ = 'Emanuele'
 
 
-class GeneralizedBootstrap(Sampler):
+class GeneralizedBootstrap(BaseSampler):
 
     def __init__(self, sample_percent, weigher):
         super(GeneralizedBootstrap, self).__init__(weigher)

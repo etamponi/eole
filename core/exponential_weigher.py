@@ -1,13 +1,13 @@
 import numpy
 from scipy.spatial import distance
 
-from core.interfaces import Weigher
+from core.interfaces import BaseWeigher
 
 
 __author__ = 'Emanuele'
 
 
-class ExponentialWeigher(Weigher):
+class ExponentialWeigher(BaseWeigher):
 
     def __init__(self, precision, power, sample_percent=None):
         self.precision = precision

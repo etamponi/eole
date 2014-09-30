@@ -1,12 +1,12 @@
 import numpy
 
-from core.interfaces import Sampler
+from core.interfaces import BaseSampler
 
 
 __author__ = 'Emanuele Tamponi'
 
 
-class DeterministicSampler(Sampler):
+class DeterministicSampler(BaseSampler):
 
     def __init__(self, sample_percent, weigher):
         super(DeterministicSampler, self).__init__(weigher)
