@@ -24,4 +24,4 @@ class ExponentialWeigherTest(unittest.TestCase):
         instances = numpy.random.randn(100, 2)
         centroid = instances[5]
         weigher = ExponentialWeigher(precision=1, power=2, sample_percent=70)
-        self.assertEqual(sum(weigher.get_sample_weights(instances, centroid) != 0), 70)
+        self.assertEqual((weigher.get_sample_weights(instances, centroid) != 0).sum(), 70)

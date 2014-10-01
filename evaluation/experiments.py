@@ -56,11 +56,15 @@ def main():
         ("exponential_eole_2", make_eole(centroid_picker, ExponentialWeigher(2, 2))),
         ("exponential_eole_3", make_eole(centroid_picker, ExponentialWeigher(3, 2))),
         ("exponential_eole_4", make_eole(centroid_picker, ExponentialWeigher(4, 2))),
-        ("exponential_eole_5", make_eole(centroid_picker, ExponentialWeigher(5, 2)))
+        ("exponential_eole_5", make_eole(centroid_picker, ExponentialWeigher(5, 2))),
+        ("exponential_eole_6", make_eole(centroid_picker, ExponentialWeigher(6, 2))),
+        ("exponential_eole_7", make_eole(centroid_picker, ExponentialWeigher(7, 2))),
+        ("exponential_eole_8", make_eole(centroid_picker, ExponentialWeigher(8, 2))),
+        ("exponential_eole_9", make_eole(centroid_picker, ExponentialWeigher(9, 2)))
     ]
 
-    n_folds = 10
-    repetitions = 10
+    n_folds = 5
+    repetitions = 20
 
     for ds_name in ds_names:
         print "Start experiments on: {}".format(ds_name)

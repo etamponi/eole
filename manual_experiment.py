@@ -2,11 +2,9 @@ from matplotlib import pyplot
 import numpy
 from scipy.stats.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler
-
 from sklearn.tree import DecisionTreeClassifier
 
 from analysis.dataset_utils import ArffLoader
-
 from analysis.experiment import Experiment
 from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
 from core.ensemble_trainer import EnsembleTrainer
@@ -34,8 +32,8 @@ def main():
     experiment_eole = Experiment("eole", eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("rf", rf, loader, n_folds, n_repetitions)
 
-    report_eole = experiment_eole.run()
     report_rf = experiment_rf.run()
+    report_eole = experiment_eole.run()
 
     accuracy_eole = report_eole.synthesis()["accuracy"]["mean"]
     accuracy_rf = report_rf.synthesis()["accuracy"]["mean"]
