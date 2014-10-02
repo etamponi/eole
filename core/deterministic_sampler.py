@@ -22,12 +22,19 @@ class DeterministicSampler(BaseSampler):
             mul_b *= 2
             sample = numpy.asarray(weights * mul_b, dtype=int)
 
-        while abs(sample.sum() - target_size) > 1:
+        prev_sum = 0
+        while True:
+            curr_sum = sample.sum()
+            if curr_sum == target_size:
+                break
+            if curr_sum == prev_sum:
+                break
             mul_c = (mul_a + mul_b) / 2
             sample = numpy.asarray(weights * mul_c, dtype=int)
-            if sample.sum() < target_size:
+            if curr_sum < target_size:
                 mul_a = mul_c
             else:
                 mul_b = mul_c
+            prev_sum = curr_sum
 
         return sample

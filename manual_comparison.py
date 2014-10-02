@@ -54,7 +54,7 @@ def main():
         "exponential_eole_9",
     ]
 
-    dataset_name = "splice"
+    dataset_name = "segment"
     eole_name = "exponential_eole"
 
     report_rf = Report.load("evaluation/reports/{}_random_forest.rep".format(dataset_name))

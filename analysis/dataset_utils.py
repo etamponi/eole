@@ -51,10 +51,12 @@ class ArffLoader(object):
                         data[row][nans] = mean
                     # Reshape to do hstack later
                     data[row] = data[row].reshape((len(data[row]), 1))
-                # Check next row if we have not removed the current one
+                # Go to next row only if we have NOT removed the current one
                 row += 1
 
             instances = numpy.hstack(tuple(data))
+            useless_indices = numpy.where(instances.var(axis=0) == 0)
+            instances = numpy.delete(instances, useless_indices, axis=1)
 
             return instances, labels
 

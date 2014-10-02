@@ -78,3 +78,14 @@ class ArffLoaderTest(unittest.TestCase):
         ])
         instances, _ = al.load_dataset()
         numpy.testing.assert_array_almost_equal(expected_instances, instances)
+
+    def test_load_dataset_with_useless_real_values(self):
+        al = ArffLoader("tests/dataset_with_useless_real_values.arff")
+        expected_instances = numpy.asarray([
+            [1.2],
+            [0.3],
+            [3.0],
+            [4.0]
+        ])
+        instances, _ = al.load_dataset()
+        numpy.testing.assert_array_almost_equal(expected_instances, instances)
