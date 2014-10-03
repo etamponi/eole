@@ -7,17 +7,17 @@ from sklearn.tree import DecisionTreeClassifier
 from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
 from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
+from core.deterministic_sampler import DeterministicSampler
 from core.ensemble_trainer import EnsembleTrainer
 from core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
-from core.generalized_bootstrap import GeneralizedBootstrap
 
 
 __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "glass"
+    dataset = "diabetes"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
     n_experts = 100
@@ -25,9 +25,9 @@ def main():
     # base_estimator = RandomForestClassifier(n_estimators=n_inner_experts, max_features="auto")
     base_estimator = DecisionTreeClassifier(max_features="auto")
     centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.chebyshev)
-    weigher_sampler = GeneralizedBootstrap(
+    weigher_sampler = DeterministicSampler(
         sample_percent=100,
-        weigher=ExponentialWeigher(precision=10, power=1, dist_measure=distance.chebyshev)
+        weigher=ExponentialWeigher(precision=1, power=1, dist_measure=distance.chebyshev)
     )
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)

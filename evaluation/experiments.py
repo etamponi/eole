@@ -16,18 +16,21 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
+    n_folds = 5
+    repetitions = 20
+    n_groups = 3
+    group = 1
     ensembles = [
         ("random_forest", make_random_forest()),
         ("bootstrap_eole_0100_01", make_eole(100, 1)),
         ("bootstrap_eole_1000_01", make_eole(1000, 1)),
         ("bootstrap_eole_0100_05", make_eole(100, 5)),
         ("bootstrap_eole_1000_05", make_eole(1000, 5)),
+        ("bootstrap_eole_0100_10", make_eole(100, 10)),
+        ("bootstrap_eole_1000_10", make_eole(1000, 10)),
         ("bootstrap_eole_0100_20", make_eole(100, 20)),
         ("bootstrap_eole_1000_20", make_eole(1000, 20))
     ]
-
-    n_folds = 5
-    repetitions = 20
 
     for dataset_name in evaluation.dataset_names():
         print "Start experiments on: {}".format(dataset_name)
