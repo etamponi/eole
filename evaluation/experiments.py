@@ -1,3 +1,4 @@
+from scipy.spatial import distance
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.tree.tree import DecisionTreeClassifier
 
@@ -8,73 +9,35 @@ from core.ensemble_trainer import EnsembleTrainer
 from core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
 from core.generalized_bootstrap import GeneralizedBootstrap
+import evaluation
 
 
 __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    ds_names = [
-        "anneal",
-        "audiology",
-        "autos",
-        "balance-scale",
-        "breast-cancer",
-        "heart-c",
-        "credit-a",
-        "credit-g",
-        "glass",
-        "heart-statlog",
-        "hepatitis",
-        "colic",
-        "heart-h",
-        "hypothyroid",
-        "ionosphere",
-        "iris",
-        "labor",
-        "letter",
-        "lymph",
-        "diabetes",
-        "primary-tumor",
-        "segment",
-        "sonar",
-        "soybean",
-        "splice",
-        "vehicle",
-        "vote",
-        "vowel",
-        "waveform-5000",
-        "breast-w",
-        "zoo"
-    ]
-
-    centroid_picker = AlmostRandomCentroidPicker()
-
     ensembles = [
         ("random_forest", make_random_forest()),
-        ("exponential_eole_1", make_eole(centroid_picker, ExponentialWeigher(1, 2))),
-        ("exponential_eole_2", make_eole(centroid_picker, ExponentialWeigher(2, 2))),
-        ("exponential_eole_3", make_eole(centroid_picker, ExponentialWeigher(3, 2))),
-        ("exponential_eole_4", make_eole(centroid_picker, ExponentialWeigher(4, 2))),
-        ("exponential_eole_5", make_eole(centroid_picker, ExponentialWeigher(5, 2))),
-        ("exponential_eole_6", make_eole(centroid_picker, ExponentialWeigher(6, 2))),
-        ("exponential_eole_7", make_eole(centroid_picker, ExponentialWeigher(7, 2))),
-        ("exponential_eole_8", make_eole(centroid_picker, ExponentialWeigher(8, 2))),
-        ("exponential_eole_9", make_eole(centroid_picker, ExponentialWeigher(9, 2)))
+        ("bootstrap_eole_0100_01", make_eole(100, 1)),
+        ("bootstrap_eole_1000_01", make_eole(1000, 1)),
+        ("bootstrap_eole_0100_05", make_eole(100, 5)),
+        ("bootstrap_eole_1000_05", make_eole(1000, 5)),
+        ("bootstrap_eole_0100_20", make_eole(100, 20)),
+        ("bootstrap_eole_1000_20", make_eole(1000, 20))
     ]
 
     n_folds = 5
     repetitions = 20
 
-    for ds_name in ds_names:
-        print "Start experiments on: {}".format(ds_name)
+    for dataset_name in evaluation.dataset_names():
+        print "Start experiments on: {}".format(dataset_name)
         for ens_name, ensemble in ensembles:
-            exp_name = "{}_{}".format(ds_name, ens_name)
+            exp_name = "{}_{}".format(dataset_name, ens_name)
             print "Start experiment: {}".format(exp_name)
             experiment = Experiment(
                 name=exp_name,
                 ensemble=ensemble,
-                dataset_loader=ArffLoader("datasets/{}.arff".format(ds_name)),
+                dataset_loader=ArffLoader("datasets/{}.arff".format(dataset_name)),
                 n_folds=n_folds,
                 n_repetitions=repetitions
             )
@@ -88,10 +51,7 @@ def make_random_forest():
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
             centroid_picker=RandomCentroidPicker(),
-            weigher_sampler=GeneralizedBootstrap(
-                sample_percent=100,
-                weigher=ExponentialWeigher(precision=0, power=1)
-            )
+            weigher_sampler=GeneralizedBootstrap(sample_percent=100, weigher=ExponentialWeigher(precision=0, power=1))
         ),
         preprocessor=None,
         use_probs=False,
@@ -99,13 +59,16 @@ def make_random_forest():
     )
 
 
-def make_eole(centroid_picker, weigher_sampler):
+def make_eole(sample_percent, precision):
     return EOLE(
         n_experts=100,
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
-            centroid_picker=centroid_picker,
-            weigher_sampler=weigher_sampler
+            centroid_picker=AlmostRandomCentroidPicker(dist_measure=distance.chebyshev),
+            weigher_sampler=GeneralizedBootstrap(
+                sample_percent=sample_percent,
+                weigher=ExponentialWeigher(precision=precision, power=1, dist_measure=distance.chebyshev)
+            )
         ),
         preprocessor=MinMaxScaler(),
         use_probs=True,
