@@ -1,4 +1,5 @@
 from scipy.spatial import distance
+
 from scipy.stats.stats import ttest_ind
 from sklearn import preprocessing
 from sklearn.ensemble.forest import RandomForestClassifier
@@ -17,7 +18,7 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "diabetes"
+    dataset = "sonar"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
     n_experts = 100
@@ -26,7 +27,7 @@ def main():
     base_estimator = DecisionTreeClassifier(max_features="auto")
     centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.chebyshev)
     weigher_sampler = DeterministicSampler(
-        sample_percent=100,
+        sample_percent=1000,
         weigher=ExponentialWeigher(precision=1, power=1, dist_measure=distance.chebyshev)
     )
 
@@ -35,7 +36,7 @@ def main():
 
     loader = ArffLoader(dataset_path)
     n_folds = 5
-    n_repetitions = 1
+    n_repetitions = 20
 
     experiment_eole = Experiment("{}_eole".format(dataset), eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("{}_rf".format(dataset), rf, loader, n_folds, n_repetitions)

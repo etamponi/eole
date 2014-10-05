@@ -2,29 +2,17 @@ import numpy
 from sklearn import preprocessing
 
 from analysis.dataset_utils import ArffLoader
+import evaluation
 
 
 __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset_names = [
-        "audiology",
-        "autos",
-        "balance-scale",
-        "breast-cancer",
-        "diabetes",
-        "heart-c",
-        "heart-h",
-        "hepatitis",
-        "lymph",
-        "sonar"
-    ]
-
-    for dataset_name in dataset_names:
+    for dataset_name in evaluation.dataset_names():
         dataset_path = "evaluation/datasets/{}.arff".format(dataset_name)
         X, y = ArffLoader(dataset_path).load_dataset()
-        X = preprocessing.StandardScaler().fit_transform(X)
+        X = preprocessing.MinMaxScaler().fit_transform(X)
 
         n, n_feats = X.shape
         n_classes = len(numpy.unique(y))

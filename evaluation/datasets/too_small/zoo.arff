@@ -86,11 +86,11 @@
 @ATTRIBUTE breathes {false, true}
 @ATTRIBUTE venomous {false, true}
 @ATTRIBUTE fins {false, true}
-@ATTRIBUTE legs INTEGER [0,9]
+@ATTRIBUTE legs real
 @ATTRIBUTE tail {false, true}
 @ATTRIBUTE domestic {false, true}
 @ATTRIBUTE catsize {false, true}
-@ATTRIBUTE type { mammal, bird, reptile, fish, amphibian, insect, invertebrate }
+@ATTRIBUTE type {mammal, bird, reptile, fish, amphibian, insect, invertebrate}
 
 @DATA
 %

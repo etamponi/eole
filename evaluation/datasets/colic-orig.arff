@@ -4,7 +4,7 @@
 %    -- Creators: Mary McLeish & Matt Cecile
 % 	  	Department of Computer Science
 % 		University of Guelph
-% 		Guelph, Ontario, Canada N1G 2W1
+% 		Guelph,Ontario,Canada N1G 2W1
 % 		mdmcleish@water.waterloo.edu
 %    -- Donor:    Will Taylor (taylor@pluto.arc.nasa.gov)
 %    -- Date:     8/6/89
@@ -18,17 +18,17 @@
 %       -- horse-colic.data: 300 training instances
 %       -- horse-colic.test: 68 test instances
 %    -- Possible class attributes: 24 (whether lesion is surgical)
-%      -- others include: 23, 25, 26, and 27
-%    -- Many Data types: (continuous, discrete, and nominal)
+%      -- others include: 23,25,26,and 27
+%    -- Many Data types: (continuous,discrete,and nominal)
 % 
-% 5. Number of Instances: 368 (300 for training, 68 for testing)
+% 5. Number of Instances: 368 (300 for training,68 for testing)
 % 
 % 6. Number of attributes: 28
 % 
 % 7. Attribute Information:
 % 
 %   1:  surgery?
-%           1 = Yes, it had surgery
+%           1 = Yes,it had surgery
 %           2 = It was treated without surgery
 % 
 %   2:  Age 
@@ -47,8 +47,8 @@
 %           - temperature may be reduced when the animal is in late shock
 %           - normal temp is 37.8
 %           - this parameter will usually change as the problem progresses
-%                eg. may start out normal, then become elevated because of
-%                    the lesion, passing back through the normal range as the
+%                eg. may start out normal,then become elevated because of
+%                    the lesion,passing back through the normal range as the
 %                    horse goes into shock
 %   5:  pulse 
 %           - linear
@@ -100,7 +100,7 @@
 %           - 5 is more indicative of a septicemia
 % 
 %  10: capillary refill time
-%           - a clinical judgement. The longer the refill, the poorer the
+%           - a clinical judgement. The longer the refill,the poorer the
 %             circulation
 %           - possible values
 %                1 = < 3 seconds
@@ -108,19 +108,19 @@
 % 
 %  11: pain - a subjective judgement of the horse's pain level
 %           - possible values:
-%                1 = alert, no pain
+%                1 = alert,no pain
 %                2 = depressed
 %                3 = intermittent mild pain
 %                4 = intermittent severe pain
 %                5 = continuous severe pain
 %           - should NOT be treated as a ordered or discrete variable!
-%           - In general, the more painful, the more likely it is to require
+%           - In general,the more painful,the more likely it is to require
 %             surgery
 %           - prior treatment of pain may mask the pain level to some extent
 % 
 %  12: peristalsis                              
 %           - an indication of the activity in the horse's gut. As the gut
-%             becomes more distended or the horse becomes more toxic, the
+%             becomes more distended or the horse becomes more toxic,the
 %             activity decreases
 %           - possible values:
 %                1 = hypermotile
@@ -154,7 +154,7 @@
 %                1 = none
 %                2 = > 1 liter
 %                3 = < 1 liter
-%           - the greater amount of reflux, the more likelihood that there is
+%           - the greater amount of reflux,the more likelihood that there is
 %             some serious obstruction to the fluid passage from the rest of
 %             the intestine
 % 
@@ -216,14 +216,14 @@
 %                3 = was euthanized
 % 
 %  24: surgical lesion?
-%           - retrospectively, was the problem (lesion) surgical?
+%           - retrospectively,was the problem (lesion) surgical?
 %           - all cases are either operated upon or autopsied so that
 %             this value and the lesion type are always known
 %           - possible values:
 %                1 = Yes
 %                2 = No
 % 
-%  25, 26, 27: type of lesion
+%  25,26,27: type of lesion
 %           - first number is site of lesion
 %                1 = gastric
 %                2 = sm intestine
@@ -299,35 +299,35 @@
 %  26 'type of lesion'          Enum   0% 100%   0%     0 /  0%     8 /  2%   1% 
 %  27 'subtype of lesion'       Enum   0% 100%   0%     0 /  0%     2 /  1%   0% 
 %  28 'pathology_cp_data'       Enum   0% 100%   0%     0 /  0%     2 /  1%   0% 
-@relation horse-colic.ORIG
-@attribute 'surgery' { 2, 1}
-@attribute 'Age' { 1, 9}
-@attribute 'Hospital Number' { 530101, 534817, 530334, 5290410, 530255, 528355, 526802, 529607, 530051, 5299630, 528548, 527927, 528031, 5291330, 534917, 530233, 5301220, 526639, 5290480, 532110, 530157, 529340, 521681, 534998, 533692, 529518, 530526, 528653, 5279440, 535415, 529475, 530242, 529427, 529663, 529796, 528812, 529493, 533847, 528996, 5277410, 529498, 5288250, 530301, 534069, 535407, 529827, 529888, 529821, 528890, 529642, 529766, 527706, 529483, 530544, 529461, 5282840, 528872, 529640, 528298, 528904, 530438, 527957, 528630, 534293, 529667, 534885, 534784, 528931, 529777, 530276, 528214, 529424, 5299250, 528469, 5292930, 534092, 534615, 534753, 530693, 527463, 527518, 534756, 5290760, 5279820, 529849, 529304, 529388, 528006, 529703, 535381, 534197, 530251, 530310, 528729, 535158, 530319, 534145, 534135, 530002, 535364, 534899, 534938, 5292490, 527563, 530381, 528668, 529764, 533696, 5297380, 527544, 533736, 534963, 527933, 532349, 533723, 535208, 533983, 535166, 528682, 534556, 534579, 530360, 529840, 528461, 530384, 5262540, 535330, 527698, 528964, 530670, 534572, 530294, 527524, 5287180, 534324, 534491, 529960, 522979, 530402, 534519, 535246, 534115, 530001, 529272, 535314, 533793, 529399, 533836, 528804, 535163, 528247, 533928, 528248, 528134, 527916, 530431, 535176, 533942, 528523, 534925, 528299, 530254, 535085, 532985, 527677, 535292, 529729, 518476, 527929, 535130, 523190, 533968, 528151, 530239, 528305, 534857, 534053, 534833, 5278330, 527365, 533887, 5299600, 528742, 5287280, 534788, 529373, 534163, 533697, 529628, 521399, 533885, 534157, 528047, 528641, 534073, 529685, 529528, 535137, 530297, 535338, 534478, 530401, 529893, 5294370, 528183, 529183, 529135, 528977, 535240, 529736, 535029, 535031, 528800, 528178, 535392, 528503, 5289420, 535196, 534597, 534280, 530028, 528179, 533750, 528702, 534183, 529160, 529045, 530354, 5281090, 5291410, 530366, 530170, 527709, 528169, 535043, 527940, 5291720, 530561, 533738, 5294540, 533871, 529812, 534719, 527734, 534933, 529296, 5305630, 528743, 530478, 528590, 529865, 527829, 534403, 527883, 528570, 534626, 528638, 534624, 5297160, 534787, 528620, 528019, 529172, 534644, 530624, 527758, 530439, 5283430, 5275210, 5305130, 529428, 529126, 535054, 530034, 534004, 533902, 533886, 527702, 529386, 530612, 534618, 528626, 527950, 535263, 534523, 528926, 534922, 527642, 534790, 528959, 534921, 528999, 528067, 529478, 529991, 530033, 5299050, 534497, 528369, 530107, 530505, 529567, 529597, 534429, 529629, 528382, 534898, 529615, 526090, 529765, 528310, 529925, 527807, 5281440, 530695, 533889, 533815, 527664, 528268, 528919, 527494, 529980, 533954, 534686, 534475, 5274920, 534156, 514279, 528433, 527465, 534268, 535337, 534111, 530576, 529930, 529695, 528452, 534783}
+@relation horse-colic-orig
+@attribute 'surgery' {2,1}
+@attribute 'Age' {1,9}
+@attribute 'Hospital Number' {530101,534817,530334,5290410,530255,528355,526802,529607,530051,5299630,528548,527927,528031,5291330,534917,530233,5301220,526639,5290480,532110,530157,529340,521681,534998,533692,529518,530526,528653,5279440,535415,529475,530242,529427,529663,529796,528812,529493,533847,528996,5277410,529498,5288250,530301,534069,535407,529827,529888,529821,528890,529642,529766,527706,529483,530544,529461,5282840,528872,529640,528298,528904,530438,527957,528630,534293,529667,534885,534784,528931,529777,530276,528214,529424,5299250,528469,5292930,534092,534615,534753,530693,527463,527518,534756,5290760,5279820,529849,529304,529388,528006,529703,535381,534197,530251,530310,528729,535158,530319,534145,534135,530002,535364,534899,534938,5292490,527563,530381,528668,529764,533696,5297380,527544,533736,534963,527933,532349,533723,535208,533983,535166,528682,534556,534579,530360,529840,528461,530384,5262540,535330,527698,528964,530670,534572,530294,527524,5287180,534324,534491,529960,522979,530402,534519,535246,534115,530001,529272,535314,533793,529399,533836,528804,535163,528247,533928,528248,528134,527916,530431,535176,533942,528523,534925,528299,530254,535085,532985,527677,535292,529729,518476,527929,535130,523190,533968,528151,530239,528305,534857,534053,534833,5278330,527365,533887,5299600,528742,5287280,534788,529373,534163,533697,529628,521399,533885,534157,528047,528641,534073,529685,529528,535137,530297,535338,534478,530401,529893,5294370,528183,529183,529135,528977,535240,529736,535029,535031,528800,528178,535392,528503,5289420,535196,534597,534280,530028,528179,533750,528702,534183,529160,529045,530354,5281090,5291410,530366,530170,527709,528169,535043,527940,5291720,530561,533738,5294540,533871,529812,534719,527734,534933,529296,5305630,528743,530478,528590,529865,527829,534403,527883,528570,534626,528638,534624,5297160,534787,528620,528019,529172,534644,530624,527758,530439,5283430,5275210,5305130,529428,529126,535054,530034,534004,533902,533886,527702,529386,530612,534618,528626,527950,535263,534523,528926,534922,527642,534790,528959,534921,528999,528067,529478,529991,530033,5299050,534497,528369,530107,530505,529567,529597,534429,529629,528382,534898,529615,526090,529765,528310,529925,527807,5281440,530695,533889,533815,527664,528268,528919,527494,529980,533954,534686,534475,5274920,534156,514279,528433,527465,534268,535337,534111,530576,529930,529695,528452,534783}
 @attribute 'rectal temperature' real
 @attribute 'pulse' integer
 @attribute 'respiratory rate' integer
-@attribute 'temperature of extremities' { 3, 1, 4, 2}
-@attribute 'peripheral pulse' { 3, 1, 4, 2}
-@attribute 'mucous membranes' { 4, 3, 6, 1, 5, 2}
-@attribute 'capillary refill time' { 2, 1, 3}
-@attribute 'pain' { 5, 3, 2, 4, 1}
-@attribute 'peristalsis' { 4, 3, 1, 2}
-@attribute 'abdominal distension' { 4, 2, 1, 3}
-@attribute 'nasogastric tube' { 1, 2, 3}
-@attribute 'nasogastric reflux' { 2, 1, 3}
+@attribute 'temperature of extremities' {3,1,4,2}
+@attribute 'peripheral pulse' {3,1,4,2}
+@attribute 'mucous membranes' {4,3,6,1,5,2}
+@attribute 'capillary refill time' {2,1,3}
+@attribute 'pain' {5,3,2,4,1}
+@attribute 'peristalsis' {4,3,1,2}
+@attribute 'abdominal distension' {4,2,1,3}
+@attribute 'nasogastric tube' {1,2,3}
+@attribute 'nasogastric reflux' {2,1,3}
 @attribute 'nasogastric reflux PH' real
-@attribute 'rectal examination - feces' { 3, 4, 1, 2}
-@attribute 'abdomen' { 5, 2, 1, 3, 4}
+@attribute 'rectal examination - feces' {3,4,1,2}
+@attribute 'abdomen' {5,2,1,3,4}
 @attribute 'packed cell volume' real
 @attribute 'total protein' real
-@attribute 'abdominocentesis appearance' { 2, 3, 1}
+@attribute 'abdominocentesis appearance' {2,3,1}
 @attribute 'abdomcentesis total protein' real
-@attribute 'outcome' { 2, 3, 1}
-@attribute 'surgical lesion' { 2, 1}
-@attribute 'site of lesion' { 11300, 2208, 0, 4300, 3124, 3205, 2124, 2111, 4124, 2112, 3207, 1400, 4205, 3111, 4122, 2207, 2209, 1124, 7111, 5205, 2113, 9400, 2305, 7209, 7400, 3112, 3209, 2322, 11124, 3025, 2205, 5206, 400, 5000, 5400, 31110, 2206, 5124, 7113, 6209, 3400, 6112, 6111, 1111, 2300, 21110, 4111, 3133, 5111, 300, 3115, 9000, 3300, 3113, 41110, 11400, 12208, 4206, 4207, 8300, 8400, 5110, 8405}
-@attribute 'type of lesion' { 0, 1400, 7111, 3111, 6112, 3112, 2208, 3205}
-@attribute 'subtype of lesion' { 0, 2209}
-@attribute 'pathology_cp_data' { 2, 1}
+@attribute 'outcome' {2,3,1}
+@attribute 'surgical lesion' {2,1}
+@attribute 'site of lesion' {11300,2208,0,4300,3124,3205,2124,2111,4124,2112,3207,1400,4205,3111,4122,2207,2209,1124,7111,5205,2113,9400,2305,7209,7400,3112,3209,2322,11124,3025,2205,5206,400,5000,5400,31110,2206,5124,7113,6209,3400,6112,6111,1111,2300,21110,4111,3133,5111,300,3115,9000,3300,3113,41110,11400,12208,4206,4207,8300,8400,5110,8405}
+@attribute 'type of lesion' {0,1400,7111,3111,6112,3112,2208,3205}
+@attribute 'subtype of lesion' {0,2209}
+@attribute 'pathology_cp_data' {2,1}
 @data
 2,1,530101,38.5,66,28,3,3,?,2,5,4,4,?,?,?,3,5,45,8.4,?,?,2,2,11300,0,0,2
 1,1,534817,39.2,88,20,?,?,4,1,3,4,2,?,?,?,4,2,50,85,2,2,3,2,2208,0,0,2

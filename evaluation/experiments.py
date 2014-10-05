@@ -1,5 +1,5 @@
 from scipy.spatial import distance
-from sklearn.preprocessing.data import MinMaxScaler
+from sklearn import preprocessing
 from sklearn.tree.tree import DecisionTreeClassifier
 
 from analysis.dataset_utils import ArffLoader
@@ -18,8 +18,8 @@ __author__ = 'Emanuele Tamponi'
 def main():
     n_folds = 5
     repetitions = 20
-    n_groups = 3
-    group = 1
+    n_groups = 4
+    group = 3
     ensembles = [
         ("random_forest", make_random_forest()),
         ("bootstrap_eole_0100_01", make_eole(100, 1)),
@@ -32,7 +32,7 @@ def main():
         ("bootstrap_eole_1000_20", make_eole(1000, 20))
     ]
 
-    for dataset_name in evaluation.dataset_names():
+    for dataset_name in evaluation.dataset_names(n_groups, group):
         print "Start experiments on: {}".format(dataset_name)
         for ens_name, ensemble in ensembles:
             exp_name = "{}_{}".format(dataset_name, ens_name)
@@ -73,7 +73,7 @@ def make_eole(sample_percent, precision):
                 weigher=ExponentialWeigher(precision=precision, power=1, dist_measure=distance.chebyshev)
             )
         ),
-        preprocessor=MinMaxScaler(),
+        preprocessor=preprocessing.MinMaxScaler(),
         use_probs=True,
         use_competences=False
     )

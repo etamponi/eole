@@ -1,3 +1,6 @@
+import glob
+import re
+
 from scipy.stats.stats import ttest_ind
 
 from analysis.report import Report
@@ -7,67 +10,32 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset_names = [
-        "anneal",
-        "audiology",
-        "autos",
-        "balance-scale",
-        "breast-cancer",
-        "heart-c",
-        "credit-a",
-        "credit-g",
-        "glass",
-        "heart-statlog",
-        "hepatitis",
-        "colic",
-        "heart-h",
-        "hypothyroid",
-        "ionosphere",
-        "iris",
-        "labor",
-        "letter",
-        "lymph",
-        "diabetes",
-        "primary-tumor",
-        "segment",
-        "sonar",
-        "soybean",
-        "splice",
-        "vehicle",
-        "vote",
-        "vowel",
-        "waveform-5000",
-        "breast-w",
-        "zoo"
-    ]
-
-    ensemble_names = [
-        "random_forest",
-        "exponential_eole_1",
-        "exponential_eole_2",
-        "exponential_eole_3",
-        "exponential_eole_4",
-        "exponential_eole_5",
-        "exponential_eole_6",
-        "exponential_eole_7",
-        "exponential_eole_8",
-        "exponential_eole_9",
-    ]
-
-    dataset_name = "segment"
-    eole_name = "exponential_eole"
+    dataset_name = "letter"
 
     report_rf = Report.load("evaluation/reports/{}_random_forest.rep".format(dataset_name))
     accuracy_full_rf = report_rf.accuracy_sample[:, -1]
-    for i in range(1, 10):
-        report_eole = Report.load("evaluation/reports/{}_{}_{}.rep".format(dataset_name, eole_name, i))
-        n_max = report_eole.synthesis()["accuracy"]["mean"].argmax()
+    print "Random Forest: {:.3f} +- {:.3f}".format(
+        accuracy_full_rf.mean(), accuracy_full_rf.std()
+    )
+    for dataset_path in glob.glob("evaluation/reports/{}_*eole*.rep".format(dataset_name)):
+        report_eole = Report.load(dataset_path)
+        eole_name = re.search(r"{}_([\w_]+)\.rep".format(dataset_name), dataset_path).group(1)
+        # n_max = report_eole.synthesis()["accuracy"]["mean"].argmax()
+        n_max = -1
         accuracy_best_eole = report_eole.accuracy_sample[:, n_max]
-        print "RF: {:.3f} - {}_{}: {:.3f} ({})".format(
-            accuracy_full_rf.mean(), eole_name, i, accuracy_best_eole.mean(), n_max
+        print "- {}: {:.3f} +- {:.3f} ({})".format(
+            eole_name, accuracy_best_eole.mean(), accuracy_best_eole.std(), n_max
         )
-        _, p = ttest_ind(accuracy_full_rf, accuracy_best_eole, equal_var=False)
-        print "RF == EOLE: {:.3f} => {}".format(p, p >= 0.05)
+        p = one_side_test(accuracy_best_eole, accuracy_full_rf)
+        print "  P(EOLE > RF) = {:.3f} => {}".format(p, p > 0.95)
+
+
+def one_side_test(first, second):
+    value, p = ttest_ind(first, second, equal_var=False)
+    if value < 0:
+        return 0.0
+    else:
+        return 1 - p / 2
 
 
 if __name__ == "__main__":
