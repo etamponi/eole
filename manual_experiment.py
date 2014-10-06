@@ -1,36 +1,42 @@
+from scipy.spatial import distance
+
 from scipy.stats.stats import ttest_ind
+from sklearn import preprocessing
 from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
-from core.centroid_picker import RandomCentroidPicker
-from core.crazy_sampler import CrazySampler, CrazyPicker
+from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
 from core.ensemble_trainer import EnsembleTrainer
 from core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
+from core.generalized_bootstrap import GeneralizedBootstrap
 
 
 __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "autos"
+    dataset = "diabetes"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
     n_experts = 100
     n_inner_experts = 1
     # base_estimator = RandomForestClassifier(n_estimators=n_inner_experts, max_features="auto")
     base_estimator = DecisionTreeClassifier(max_features="auto")
-    centroid_picker = CrazyPicker()
-    weigher_sampler = CrazySampler(precision=1, power=2)
+    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.chebyshev)
+    weigher_sampler = GeneralizedBootstrap(
+        sample_percent=1000,
+        weigher=ExponentialWeigher(precision=10, power=2, dist_measure=distance.chebyshev)
+    )
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
     rf = make_random_forest(n_experts, n_inner_experts)
 
-    loader = ArffLoader(dataset_path)
+    loader = ArffLoader(dataset_path, binarize=True)
     n_folds = 5
-    n_repetitions = 20
+    n_repetitions = 1
 
     experiment_eole = Experiment("{}_eole".format(dataset), eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("{}_rf".format(dataset), rf, loader, n_folds, n_repetitions)
@@ -55,7 +61,7 @@ def make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler):
             centroid_picker=centroid_picker,
             weigher_sampler=weigher_sampler
         ),
-        preprocessor=None,
+        preprocessor=preprocessing.MinMaxScaler(),
         use_probs=True,
         use_competences=False
     )
