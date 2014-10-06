@@ -41,3 +41,17 @@ class CrazySamplerTest(unittest.TestCase):
         ])
         sampler = CrazySampler()
         numpy.testing.assert_array_almost_equal(expected_weights, sampler.get_sample_weights(instances, centroid))
+
+    def test_weights_with_rotation(self):
+        instances = numpy.random.randn(5, 8)
+        centroid = instances[1]
+        factor = float(2)
+        expected_weights = numpy.exp([
+            -0.5 * ((0 - 1)/factor)**2,
+            -0.5 * ((1 - 1)/factor)**2,
+            -0.5 * ((2 - 1)/factor)**2,
+            -0.5 * ((3 - 1)/factor)**2,
+            -0.5 * ((-1 - 1)/factor)**2
+        ])
+        sampler = CrazySampler()
+        numpy.testing.assert_array_almost_equal(expected_weights, sampler.get_sample_weights(instances, centroid))

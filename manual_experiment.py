@@ -15,7 +15,7 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "heart-statlog"
+    dataset = "autos"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
     n_experts = 100
@@ -23,14 +23,14 @@ def main():
     # base_estimator = RandomForestClassifier(n_estimators=n_inner_experts, max_features="auto")
     base_estimator = DecisionTreeClassifier(max_features="auto")
     centroid_picker = CrazyPicker()
-    weigher_sampler = CrazySampler(precision=0.1, power=1)
+    weigher_sampler = CrazySampler(precision=1, power=2)
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
     rf = make_random_forest(n_experts, n_inner_experts)
 
     loader = ArffLoader(dataset_path)
     n_folds = 5
-    n_repetitions = 1
+    n_repetitions = 20
 
     experiment_eole = Experiment("{}_eole".format(dataset), eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("{}_rf".format(dataset), rf, loader, n_folds, n_repetitions)

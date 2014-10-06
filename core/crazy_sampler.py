@@ -19,10 +19,16 @@ class CrazySampler(SamplerWeigher):
     def get_sample_weights(self, instances, centroid):
         distances = numpy.asarray([distance.euclidean(x, centroid) for x in instances])
         c_index = distances.argmin()
-        factor = float(len(instances) / 2)
-        return numpy.asarray([self._get_weight((i - c_index) / factor) for i in range(len(instances))])
+        return numpy.asarray([self._get_weight(i, c_index, len(instances)) for i in range(len(instances))])
 
-    def _get_weight(self, relative_pos):
+    def _get_weight(self, i, c_index, size):
+        factor = size / 2
+        relative_pos = float(i - c_index)
+        if relative_pos > factor:
+            relative_pos -= size
+        if relative_pos < -factor:
+            relative_pos += size
+        relative_pos /= factor
         return numpy.exp(-0.5 * (self.precision * relative_pos)**self.power)
 
     def get_weights(self, instances, centroid):
