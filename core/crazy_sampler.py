@@ -17,8 +17,11 @@ class CrazySampler(SamplerWeigher):
         pass
 
     def get_sample_weights(self, instances, centroid):
-        distances = numpy.asarray([distance.euclidean(x, centroid) for x in instances])
-        c_index = distances.argmin()
+        if isinstance(centroid, int):
+            c_index = centroid
+        else:
+            distances = numpy.asarray([distance.euclidean(x, centroid) for x in instances])
+            c_index = distances.argmin()
         return numpy.asarray([self._get_weight(i, c_index, len(instances)) for i in range(len(instances))])
 
     def _get_weight(self, i, c_index, size):
@@ -39,4 +42,4 @@ class CrazyPicker(object):
 
     def pick(self, instances, n_centroids):
         indices = numpy.linspace(0, len(instances)-1, n_centroids).astype(int)
-        return instances[indices]
+        return indices

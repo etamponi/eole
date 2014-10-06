@@ -1,15 +1,16 @@
 import arff
 import numpy
-from sklearn.preprocessing.label import label_binarize
+from sklearn.preprocessing.label import label_binarize, LabelEncoder
 
 __author__ = 'Emanuele Tamponi'
 
 
 class ArffLoader(object):
 
-    def __init__(self, file_name, label_attribute=None):
+    def __init__(self, file_name, label_attribute=None, binarize=True):
         self.file_name = file_name
         self.label_attribute = label_attribute
+        self.binarize = binarize
 
     def load_dataset(self):
         with open(self.file_name) as f:
@@ -37,7 +38,14 @@ class ArffLoader(object):
                         # If no data is present, just remove the row
                         data.pop(row)
                         continue
-                    data[row] = numpy.asarray(label_binarize(data[row], attribute_type), dtype=numpy.float64)
+                    if self.binarize:
+                        data[row] = numpy.asarray(label_binarize(data[row], attribute_type), dtype=numpy.float64)
+                    else:
+                        encoder = LabelEncoder()
+                        encoder.classes_ = attribute_type
+                        if "?" not in encoder.classes_:
+                            encoder.classes_.insert(0, "?")
+                        data[row] = encoder.transform(data[row]).reshape((len(data[row]), 1)).astype(numpy.float64)
                 else:
                     # Numeric attributes: check for nan values
                     data[row] = data[row].astype(numpy.float64)
