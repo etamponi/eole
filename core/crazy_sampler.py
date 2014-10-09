@@ -40,6 +40,6 @@ class CrazySampler(SamplerWeigher):
 
 class CrazyPicker(object):
 
-    def pick(self, instances, n_centroids):
+    def pick(self, instances, labels, n_centroids):
         indices = numpy.linspace(0, len(instances)-1, n_centroids).astype(int)
         return indices

@@ -26,4 +26,4 @@ class CrazyPickerTest(unittest.TestCase):
             instances[100]
         ])
         picker = CrazyPicker()
-        numpy.testing.assert_array_equal(expected_centroids, picker.pick(instances, 11))
+        numpy.testing.assert_array_equal(expected_centroids, instances[picker.pick(instances, None, 11)])

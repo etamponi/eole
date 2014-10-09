@@ -3,8 +3,11 @@ import numpy
 __author__ = 'Emanuele'
 
 
-def order(ordering_matrix):
-    return numpy.fliplr(numpy.argsort(ordering_matrix))
+def order(ordering_matrix, decreasing=True):
+    if decreasing:
+        return numpy.fliplr(numpy.argsort(ordering_matrix))
+    else:
+        return numpy.argsort(ordering_matrix)
 
 
 def sort_matrix(matrix, indices):

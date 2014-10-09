@@ -16,7 +16,7 @@ class EnsembleTrainer(object):
     def train(self, n_experts, instances, labels):
         experts = []
         self.weigher_sampler.train(instances)
-        for centroid in self.centroid_picker.pick(instances, n_experts):
+        for centroid in self.centroid_picker.pick(instances, labels, n_experts):
             expert = LocalExpert(sklearn.clone(self.base_estimator), self.weigher_sampler)
             expert.train(instances, labels, centroid)
             experts.append(expert)
