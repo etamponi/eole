@@ -1,7 +1,9 @@
 import unittest
 
 import numpy
+from scipy.spatial import distance
 
+from core import matrix_utils
 import mri
 
 
@@ -18,6 +20,8 @@ class MRITest(unittest.TestCase):
             [0., 4.],
             [1., 3.]
         ])
+        distances = distance.squareform(distance.pdist(instances, metric="euclidean"))
+        indices = matrix_utils.order(distances, decreasing=False)
         labels = numpy.asarray(["a", "a", "b", "b", "a"])
         expected_values = numpy.asarray([
             [2, 0],
@@ -26,7 +30,7 @@ class MRITest(unittest.TestCase):
             [0, 2],
             [1, 1]
         ], dtype=numpy.float64)
-        numpy.testing.assert_array_equal(expected_values, mri.probe(instances, labels, radius=1.3))
+        numpy.testing.assert_array_equal(expected_values, mri.probe(distances, indices, labels, radius=1.3))
 
     def test_psi(self):
         labels = numpy.asarray(["a", "a", "b", "b", "a"])
@@ -72,3 +76,15 @@ class MRITest(unittest.TestCase):
             (1 - 0.3) + (1 - 0.2)*0.5
         ])
         numpy.testing.assert_array_almost_equal(expected_mri, mri.mri(psi_matrix))
+
+    def test_find_radius_for_percent(self):
+        distances = numpy.asarray([
+            [3, 1, 2],
+            [2, 6, 4],
+            [1, 1.5, 0.5]
+        ])
+        indices = matrix_utils.order(distances, decreasing=False)
+        expected_radius = float(2 + 4 + 1) / 3
+        self.assertAlmostEqual(expected_radius, mri.mean_radius_for_percent(distances, indices, 70))
+        expected_radius = float(3 + 6 + 1.5) / 3
+        self.assertAlmostEqual(expected_radius, mri.mean_radius_for_percent(distances, indices, 100))

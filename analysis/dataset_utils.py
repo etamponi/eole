@@ -79,5 +79,5 @@ class CoupledShuffle(object):
         if seed is not None:
             numpy.random.seed(seed)
         permutation = numpy.random.permutation(self.size)
-        arrays = list(array.copy()[permutation] for array in self.arrays)
+        arrays = [array.copy()[permutation] for array in self.arrays]
         return arrays

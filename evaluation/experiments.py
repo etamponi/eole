@@ -1,3 +1,5 @@
+import os
+
 from scipy.spatial import distance
 from sklearn import preprocessing
 from sklearn.tree.tree import DecisionTreeClassifier
@@ -18,8 +20,8 @@ __author__ = 'Emanuele Tamponi'
 def main():
     n_folds = 5
     repetitions = 20
-    n_groups = 4
-    group = 3
+    n_groups = 1
+    group = 0
     ensembles = [
         ("random_forest", make_random_forest()),
         ("bootstrap_eole_0100_01", make_eole(100, 1)),
@@ -36,6 +38,9 @@ def main():
         print "Start experiments on: {}".format(dataset_name)
         for ens_name, ensemble in ensembles:
             exp_name = "{}_{}".format(dataset_name, ens_name)
+            if os.path.isfile("reports/{}.rep".format(exp_name)):
+                print "Experiment {} already done, going to next one.".format(exp_name)
+                continue
             print "Start experiment: {}".format(exp_name)
             experiment = Experiment(
                 name=exp_name,

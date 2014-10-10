@@ -1,22 +1,17 @@
 import numpy
-from scipy.spatial import distance
-
-from core import matrix_utils
 
 
 __author__ = 'Emanuele Tamponi'
 
 
-def probe(instances, labels, radius, metric="euclidean"):
+def probe(distances, indices, labels, radius):
     classes = numpy.unique(labels).tolist()
-    distances = distance.squareform(distance.pdist(instances, metric=metric))
-    indices = matrix_utils.order(distances, decreasing=False)
-    ret = numpy.zeros((len(instances), len(classes)))
-    for i, row in enumerate(indices):
-        for index in row:
-            if distances[i, index] > radius:
+    ret = numpy.zeros((len(distances), len(classes)))
+    for i, col_indices in enumerate(indices):
+        for col_index in col_indices:
+            if distances[i, col_index] > radius:
                 break
-            ret[i, classes.index(labels[index])] += 1
+            ret[i, classes.index(labels[col_index])] += 1
     return ret
 
 
@@ -29,10 +24,10 @@ def psi(probes, labels):
     return ret
 
 
-def psi_matrix(instances, labels, radii, metric="euclidean"):
-    matrix = numpy.zeros((len(instances), len(radii)))
+def psi_matrix(distances, indices, labels, radii):
+    matrix = numpy.zeros((len(distances), len(radii)))
     for j, radius in enumerate(radii):
-        probes = probe(instances, labels, radius, metric)
+        probes = probe(distances, indices, labels, radius)
         matrix[:, j] = psi(probes, labels)
     return matrix
 
@@ -44,3 +39,9 @@ def mri(psi_m):
     for j, w in enumerate(ws):
         mris += w * (1 - psi_m[:, j])
     return mris / (2 * ws.sum())
+
+
+def mean_radius_for_percent(distances, indices, percent):
+    j_percent = max(int(float(percent) * distances.shape[1] / 100) - 1, 0)
+    dist_col = numpy.asarray([distances[row, indices[row, j_percent]] for row in range(len(distances))])
+    return dist_col.mean()

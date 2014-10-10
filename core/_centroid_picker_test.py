@@ -20,21 +20,23 @@ class CentroidPickerTest(unittest.TestCase):
 
     def test_pick(self):
         for cp in self.implementations:
-            instances = numpy.random.rand(10, 2)
-            labels = numpy.random.choice(["a", "b"], size=10)
-            centroids = cp.pick(instances, labels, 3)
-            self.assertEqual((3, 2), centroids.shape)
-            self.assertTrue(all(c in instances for c in centroids))
+            instances = numpy.random.rand(100, 2)
+            labels = numpy.random.choice(["a", "b"], size=100)
+            centroids = cp.pick(instances, labels, 10)
+            self.assertEqual((10, 2), centroids.shape)
+            for c in centroids:
+                self.assertIn(c, instances, "{} not present".format(c))
 
     def test_repeatability_and_randomness(self):
         for cp in self.implementations:
             if isinstance(cp, DeterministicCentroidPicker) or isinstance(cp, MRIPicker):
                 continue
-            instances = numpy.random.rand(10, 2)
+            instances = numpy.random.rand(100, 2)
+            labels = numpy.random.choice(["a", "b"], size=100)
             numpy.random.seed(1)
-            c1 = cp.pick(instances, None, 3)
-            c2 = cp.pick(instances, None, 3)
+            c1 = cp.pick(instances, labels, 3)
+            c2 = cp.pick(instances, labels, 3)
             self.assertTrue(numpy.any(c1 != c2))
             numpy.random.seed(1)
-            c2 = cp.pick(instances, None, 3)
+            c2 = cp.pick(instances, labels, 3)
             self.assertTrue(numpy.all(c1 == c2))
