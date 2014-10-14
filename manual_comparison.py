@@ -10,7 +10,7 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset_name = "heart-statlog"
+    dataset_name = "mushroom"
 
     report_rf = Report.load("evaluation/reports/{}_random_forest.rep".format(dataset_name))
     accuracy_full_rf = report_rf.accuracy_sample[:, -1]

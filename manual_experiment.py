@@ -10,27 +10,20 @@ from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicke
 from core.ensemble_trainer import EnsembleTrainer
 from core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
-from core.generalized_bootstrap import GeneralizedBootstrap
 
 
 __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "heart-statlog"
+    dataset = "autos"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
     n_experts = 100
     n_inner_experts = 1
-    # base_estimator = RandomForestClassifier(n_estimators=n_inner_experts, max_features="auto")
     base_estimator = DecisionTreeClassifier(max_features="auto")
-    # centroid_picker = MRIPicker(m=5, max_mean_percent=30, take_first=None, metric="chebyshev")
-    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.chebyshev)
-    weigher_sampler = GeneralizedBootstrap(
-        sample_percent=1000,
-        weigher=ExponentialWeigher(precision=5, power=1, dist_measure=distance.chebyshev)
-    )
-
+    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.braycurtis)
+    weigher_sampler = ExponentialWeigher(precision=10, power=1, dist_measure=distance.braycurtis)
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
     rf = make_random_forest(n_experts, n_inner_experts)
 
@@ -47,6 +40,7 @@ def main():
 
     report_rf = experiment_rf.run()
     accuracy_rf = report_rf.synthesis()["accuracy"]["mean"]
+    print "EOLE: {:.3f} {:.3f} ({})".format(accuracy_eole[-1], accuracy_eole.max(), accuracy_eole.argmax())
     print "RF: {:.3f} {:.3f} ({})".format(accuracy_rf[-1], accuracy_rf.max(), accuracy_rf.argmax())
 
     p = one_side_test(report_eole.accuracy_sample[:, -1], report_rf.accuracy_sample[:, -1])

@@ -2,8 +2,7 @@ import unittest
 
 import numpy
 
-from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker, \
-    KernelDensityCentroidPicker, DeterministicCentroidPicker, MRIPicker
+from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
 
 
 __author__ = 'Emanuele'
@@ -13,9 +12,7 @@ class CentroidPickerTest(unittest.TestCase):
 
     def setUp(self):
         self.implementations = [
-            AlmostRandomCentroidPicker(), RandomCentroidPicker(),
-            KernelDensityCentroidPicker(), DeterministicCentroidPicker(),
-            MRIPicker()
+            AlmostRandomCentroidPicker(), RandomCentroidPicker()
         ]
 
     def test_pick(self):
@@ -28,8 +25,9 @@ class CentroidPickerTest(unittest.TestCase):
                 self.assertIn(c, instances, "{} not present".format(c))
 
     def test_repeatability_and_randomness(self):
+        exclude = {}
         for cp in self.implementations:
-            if isinstance(cp, DeterministicCentroidPicker) or isinstance(cp, MRIPicker):
+            if cp.__class__ in exclude:
                 continue
             instances = numpy.random.rand(100, 2)
             labels = numpy.random.choice(["a", "b"], size=100)
