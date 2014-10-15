@@ -1,6 +1,7 @@
 from scipy.spatial import distance
 from scipy.stats.stats import ttest_ind
 from sklearn import preprocessing
+
 from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
@@ -19,21 +20,21 @@ def main():
     dataset = "autos"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
-    n_experts = 100
+    n_experts = 10
     n_inner_experts = 1
     if n_inner_experts == 1:
-        base_estimator = DecisionTreeClassifier(max_features="auto")
+        base_estimator = DecisionTreeClassifier(max_features=0.5, max_leaf_nodes=40)
     else:
         base_estimator = RandomForestClassifier(max_features="auto", n_estimators=n_inner_experts)
-    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.chebyshev)
-    weigher_sampler = ExponentialWeigher(precision=10, power=1, dist_measure=distance.chebyshev, sample_percent=40)
+    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.euclidean)
+    weigher_sampler = ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean, sample_percent=None)
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
     rf = make_random_forest(n_experts, n_inner_experts)
 
     loader = ArffLoader(dataset_path)
-    n_folds = 5
-    n_repetitions = 20
+    n_folds = 10
+    n_repetitions = 10
 
     experiment_eole = Experiment("{}_eole".format(dataset), eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("{}_rf".format(dataset), rf, loader, n_folds, n_repetitions)
