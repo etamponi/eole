@@ -20,18 +20,19 @@ __author__ = 'Emanuele Tamponi'
 def main():
     n_folds = 5
     repetitions = 20
-    n_groups = 1
+    n_groups = 2
     group = 0
     ensembles = [
-        ("random_forest", make_random_forest()),
-        ("bootstrap_eole_0100_01", make_eole(100, 1)),
-        ("bootstrap_eole_1000_01", make_eole(1000, 1)),
-        ("bootstrap_eole_0100_05", make_eole(100, 5)),
-        ("bootstrap_eole_1000_05", make_eole(1000, 5)),
-        ("bootstrap_eole_0100_10", make_eole(100, 10)),
-        ("bootstrap_eole_1000_10", make_eole(1000, 10)),
-        ("bootstrap_eole_0100_20", make_eole(100, 20)),
-        ("bootstrap_eole_1000_20", make_eole(1000, 20))
+        ("small_random_forest", make_random_forest()),
+        ("small_eole_10_050", make_eole(0.1, 50)),
+        ("small_eole_10_100", make_eole(0.1, 100)),
+        ("small_eole_10_Nil", make_eole(0.1, None)),
+        ("small_eole_30_050", make_eole(0.3, 50)),
+        ("small_eole_30_100", make_eole(0.3, 100)),
+        ("small_eole_30_Nil", make_eole(0.3, None)),
+        ("small_eole_50_050", make_eole(0.5, 50)),
+        ("small_eole_50_100", make_eole(0.5, 100)),
+        ("small_eole_50_Nil", make_eole(0.5, None)),
     ]
 
     for dataset_name in evaluation.dataset_names(n_groups, group):
@@ -55,7 +56,7 @@ def main():
 
 def make_random_forest():
     return EOLE(
-        n_experts=100,
+        n_experts=10,
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features="auto"),
             centroid_picker=RandomCentroidPicker(),
@@ -67,16 +68,13 @@ def make_random_forest():
     )
 
 
-def make_eole(sample_percent, precision):
+def make_eole(max_feature_percent, max_leaf_nodes):
     return EOLE(
-        n_experts=100,
+        n_experts=10,
         ensemble_trainer=EnsembleTrainer(
-            base_estimator=DecisionTreeClassifier(max_features="auto"),
-            centroid_picker=AlmostRandomCentroidPicker(dist_measure=distance.chebyshev),
-            weigher_sampler=GeneralizedBootstrap(
-                sample_percent=sample_percent,
-                weigher=ExponentialWeigher(precision=precision, power=1, dist_measure=distance.chebyshev)
-            )
+            base_estimator=DecisionTreeClassifier(max_features=max_feature_percent, max_leaf_nodes=max_leaf_nodes),
+            centroid_picker=AlmostRandomCentroidPicker(dist_measure=distance.euclidean),
+            weigher_sampler=ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean)
         ),
         preprocessor=preprocessing.MinMaxScaler(),
         use_probs=True,
