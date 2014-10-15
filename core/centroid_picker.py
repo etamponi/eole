@@ -22,7 +22,7 @@ class AlmostRandomCentroidPicker(object):
 
     def pick(self, instances, labels, n_centroids):
         p = numpy.ones(len(instances)) / len(instances)
-        centroids = numpy.zeros((n_centroids, instances.shape[1]))
+        centroids = numpy.zeros(shape=(n_centroids, instances.shape[1]))
         centroids[0] = instances[numpy.random.multinomial(1, p).argmax()]
         for i in range(1, n_centroids):
             distances = numpy.asarray([self.dist_measure(x, centroids[i-1]) for x in instances])

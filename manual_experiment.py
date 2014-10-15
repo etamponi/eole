@@ -21,9 +21,13 @@ def main():
 
     n_experts = 100
     n_inner_experts = 1
-    base_estimator = DecisionTreeClassifier(max_features="auto")
-    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.braycurtis)
-    weigher_sampler = ExponentialWeigher(precision=10, power=1, dist_measure=distance.braycurtis)
+    if n_inner_experts == 1:
+        base_estimator = DecisionTreeClassifier(max_features="auto")
+    else:
+        base_estimator = RandomForestClassifier(max_features="auto", n_estimators=n_inner_experts)
+    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.chebyshev)
+    weigher_sampler = ExponentialWeigher(precision=10, power=1, dist_measure=distance.chebyshev, sample_percent=40)
+
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
     rf = make_random_forest(n_experts, n_inner_experts)
 
