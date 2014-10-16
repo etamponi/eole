@@ -15,14 +15,16 @@ def main():
     improvs = Counter()
     improvs_stat = Counter()
     improvs_percent = defaultdict(list)
+    improv_by_dataset = {}
     for dataset_name in dataset_names():
-        report_rf = Report.load("reports/{}_random_forest.rep".format(dataset_name))
+        improv_by_dataset[dataset_name] = ("", 0, False)
+        report_rf = Report.load("reports/{}_small_random_forest.rep".format(dataset_name))
         accuracy_full_rf = report_rf.accuracy_sample[:, -1]
         print "COMPARISON FOR: {}".format(dataset_name.upper())
         print "Random Forest: {:.3f} +- {:.3f}".format(
             accuracy_full_rf.mean(), accuracy_full_rf.std()
         )
-        for dataset_path in glob.glob("reports/{}_*eole*.rep".format(dataset_name)):
+        for dataset_path in glob.glob("reports/{}_small_eole*.rep".format(dataset_name)):
             report_eole = Report.load(dataset_path)
             eole_name = re.search(r"{}_([\w_]+)\.rep".format(dataset_name), dataset_path).group(1)
             # n_max = report_eole.synthesis()["accuracy"]["mean"].argmax()
@@ -34,16 +36,32 @@ def main():
             p = one_side_test(accuracy_best_eole, accuracy_full_rf)
             print "  P(EOLE > RF) = {:.3f} => {}".format(p, p > 0.95)
             if p > 0:
+                imp = accuracy_best_eole.mean() - accuracy_full_rf.mean()
                 improvs[eole_name] += 1
                 improvs_percent[eole_name].append(
-                    str(round(100*(accuracy_best_eole.mean() - accuracy_full_rf.mean()), 1))
+                    str(round(100*imp, 1))
                 )
+                if imp > improv_by_dataset[dataset_name][1]:
+                    improv_by_dataset[dataset_name] = [eole_name, imp, False]
             if p > 0.95:
                 improvs_stat[eole_name] += 1
                 improvs_percent[eole_name][-1] += "*"
+                if improv_by_dataset[dataset_name][0] == eole_name:
+                    improv_by_dataset[dataset_name][2] = True
     total = len(dataset_names())
     for eole in improvs:
         print "{}: {} {} ({}) = {}".format(eole, total, improvs[eole], improvs_stat[eole], improvs_percent[eole])
+    i = 1
+    j = 0
+    for dataset_name in sorted(improv_by_dataset.keys()):
+        data = improv_by_dataset[dataset_name]
+        if data[1] == 0:
+            continue
+        print "{:2d} {:15s}: {} = {:.1f} {}".format(i, dataset_name, data[0], data[1]*100, data[2])
+        if data[2]:
+            j += 1
+        i += 1
+    print "Significative total improvements:", j
 
 
 def one_side_test(first, second):

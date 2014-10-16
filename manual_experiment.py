@@ -7,7 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
-from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
+from core.centroid_picker import RandomCentroidPicker, ClusterCenterPicker
 from core.ensemble_trainer import EnsembleTrainer
 from core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
@@ -17,16 +17,16 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "autos"
+    dataset = "balance-scale"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
     n_experts = 10
     n_inner_experts = 1
     if n_inner_experts == 1:
-        base_estimator = DecisionTreeClassifier(max_features=0.5, max_leaf_nodes=40)
+        base_estimator = DecisionTreeClassifier(max_features=0.1, max_leaf_nodes=25)
     else:
-        base_estimator = RandomForestClassifier(max_features="auto", n_estimators=n_inner_experts)
-    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.euclidean)
+        base_estimator = RandomForestClassifier(max_features=0.3, n_estimators=n_inner_experts)
+    centroid_picker = ClusterCenterPicker()
     weigher_sampler = ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean, sample_percent=None)
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)

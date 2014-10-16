@@ -18,10 +18,10 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    n_folds = 5
-    repetitions = 20
+    n_folds = 10
+    repetitions = 10
     n_groups = 2
-    group = 0
+    group = 1
     ensembles = [
         ("small_random_forest", make_random_forest()),
         ("small_eole_10_050", make_eole(0.1, 50)),
@@ -35,7 +35,7 @@ def main():
         ("small_eole_50_Nil", make_eole(0.5, None)),
     ]
 
-    for dataset_name in evaluation.dataset_names(n_groups, group):
+    for dataset_name in evaluation.dataset_names(n_groups, group)[::-1]:
         print "Start experiments on: {}".format(dataset_name)
         for ens_name, ensemble in ensembles:
             exp_name = "{}_{}".format(dataset_name, ens_name)
