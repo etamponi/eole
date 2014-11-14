@@ -24,15 +24,15 @@ def main():
     group = 1
     ensembles = [
         ("small_random_forest", make_random_forest()),
-        ("small_eole_10_050", make_eole(0.1, 50)),
-        ("small_eole_10_100", make_eole(0.1, 100)),
-        ("small_eole_10_Nil", make_eole(0.1, None)),
-        ("small_eole_30_050", make_eole(0.3, 50)),
-        ("small_eole_30_100", make_eole(0.3, 100)),
-        ("small_eole_30_Nil", make_eole(0.3, None)),
-        ("small_eole_50_050", make_eole(0.5, 50)),
-        ("small_eole_50_100", make_eole(0.5, 100)),
-        ("small_eole_50_Nil", make_eole(0.5, None)),
+        ("small_eole_10_050_50", make_eole(0.1, 50, 50)),
+        ("small_eole_10_100_50", make_eole(0.1, 100, 50)),
+        ("small_eole_10_Nil_50", make_eole(0.1, None, 50)),
+        ("small_eole_30_050_50", make_eole(0.3, 50, 50)),
+        ("small_eole_30_100_50", make_eole(0.3, 100, 50)),
+        ("small_eole_30_Nil_50", make_eole(0.3, None, 50)),
+        ("small_eole_50_050_50", make_eole(0.5, 50, 50)),
+        ("small_eole_50_100_50", make_eole(0.5, 100, 50)),
+        ("small_eole_50_Nil_50", make_eole(0.5, None, 50)),
     ]
 
     for dataset_name in evaluation.dataset_names(n_groups, group)[::-1]:
@@ -68,13 +68,14 @@ def make_random_forest():
     )
 
 
-def make_eole(max_feature_percent, max_leaf_nodes):
+def make_eole(max_feature_percent, max_leaf_nodes, sample_percent=None):
     return EOLE(
         n_experts=10,
         ensemble_trainer=EnsembleTrainer(
             base_estimator=DecisionTreeClassifier(max_features=max_feature_percent, max_leaf_nodes=max_leaf_nodes),
             centroid_picker=AlmostRandomCentroidPicker(dist_measure=distance.euclidean),
-            weigher_sampler=ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean)
+            weigher_sampler=ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean,
+                                               sample_percent=sample_percent)
         ),
         preprocessor=preprocessing.MinMaxScaler(),
         use_probs=True,

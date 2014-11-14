@@ -18,13 +18,16 @@ def main():
     improv_by_dataset = {}
     for dataset_name in dataset_names():
         improv_by_dataset[dataset_name] = ("", 0, False)
-        report_rf = Report.load("reports/{}_small_random_forest.rep".format(dataset_name))
+        try:
+            report_rf = Report.load("reports/{}_small_random_forest.rep".format(dataset_name))
+        except:
+            continue
         accuracy_full_rf = report_rf.accuracy_sample[:, -1]
         print "COMPARISON FOR: {}".format(dataset_name.upper())
         print "Random Forest: {:.3f} +- {:.3f}".format(
             accuracy_full_rf.mean(), accuracy_full_rf.std()
         )
-        for dataset_path in glob.glob("reports/{}_small_eole*.rep".format(dataset_name)):
+        for dataset_path in glob.glob("reports/{}_small_eole_*.rep".format(dataset_name)):
             report_eole = Report.load(dataset_path)
             eole_name = re.search(r"{}_([\w_]+)\.rep".format(dataset_name), dataset_path).group(1)
             # n_max = report_eole.synthesis()["accuracy"]["mean"].argmax()

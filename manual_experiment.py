@@ -1,13 +1,12 @@
 from scipy.spatial import distance
 from scipy.stats.stats import ttest_ind
 from sklearn import preprocessing
-
 from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
-from core.centroid_picker import RandomCentroidPicker, ClusterCenterPicker
+from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
 from core.ensemble_trainer import EnsembleTrainer
 from core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
@@ -17,16 +16,16 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "balance-scale"
+    dataset = "autos"
     dataset_path = "evaluation/datasets/{}.arff".format(dataset)
 
     n_experts = 10
     n_inner_experts = 1
     if n_inner_experts == 1:
-        base_estimator = DecisionTreeClassifier(max_features=0.1, max_leaf_nodes=25)
+        base_estimator = DecisionTreeClassifier(max_features=0.5, max_leaf_nodes=None)
     else:
         base_estimator = RandomForestClassifier(max_features=0.3, n_estimators=n_inner_experts)
-    centroid_picker = ClusterCenterPicker()
+    centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.euclidean)
     weigher_sampler = ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean, sample_percent=None)
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
@@ -46,7 +45,7 @@ def main():
     report_rf = experiment_rf.run()
     accuracy_rf = report_rf.synthesis()["accuracy"]["mean"]
     print "EOLE: {:.3f} {:.3f} ({})".format(accuracy_eole[-1], accuracy_eole.max(), accuracy_eole.argmax())
-    print "RF: {:.3f} {:.3f} ({})".format(accuracy_rf[-1], accuracy_rf.max(), accuracy_rf.argmax())
+    print "  RF: {:.3f} {:.3f} ({})".format(accuracy_rf[-1], accuracy_rf.max(), accuracy_rf.argmax())
 
     p = one_side_test(report_eole.accuracy_sample[:, -1], report_rf.accuracy_sample[:, -1])
     print "P(EOLE > RF) = {:.3f} => {}".format(p, p > 0.95)
@@ -86,6 +85,17 @@ def one_side_test(first, second):
         return 0.0
     else:
         return 1 - p / 2
+
+
+class TransformerLoader(object):
+
+    def __init__(self, loader, transform):
+        self.loader = loader
+        self.transform = transform
+
+    def load_dataset(self):
+        X, y = self.loader.load_dataset()
+        return self.transform.fit_transform(X), y
 
 
 if __name__ == "__main__":
