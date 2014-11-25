@@ -6,5 +6,7 @@
 @DATA
 1.2, POS
 ?, POS
+3.6, POS
 3.0, NEG
 4.0, NEG
+?, NEG

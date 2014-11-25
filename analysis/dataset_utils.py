@@ -54,9 +54,9 @@ class ArffLoader(object):
                         # If everything is nan, remove the feature
                         data.pop(row)
                         continue
-                    if numpy.any(nans):
-                        mean = data[row][numpy.invert(nans)].sum() / numpy.invert(nans).sum()
-                        data[row][nans] = mean
+                    # if numpy.any(nans):
+                    #     mean = data[row][numpy.invert(nans)].sum() / numpy.invert(nans).sum()
+                    #     data[row][nans] = mean
                     # Reshape to do hstack later
                     data[row] = data[row].reshape((len(data[row]), 1))
                 # Go to next row only if we have NOT removed the current one
@@ -65,6 +65,15 @@ class ArffLoader(object):
             instances = numpy.hstack(tuple(data))
             useless_indices = numpy.where(instances.var(axis=0) == 0)
             instances = numpy.delete(instances, useless_indices, axis=1)
+
+            for label in numpy.unique(labels):
+                label_instances = instances[labels == label]
+                for j, feature in enumerate(label_instances.transpose()):
+                    nans = numpy.isnan(feature)
+                    if numpy.any(nans):
+                        mean = feature[numpy.invert(nans)].sum() / numpy.invert(nans).sum()
+                        label_instances[nans, j] = mean
+                        instances[labels == label] = label_instances
 
             return instances, labels
 

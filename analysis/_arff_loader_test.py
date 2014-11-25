@@ -72,9 +72,11 @@ class ArffLoaderTest(unittest.TestCase):
         al = ArffLoader("tests/dataset_with_unknown_real_values.arff")
         expected_instances = numpy.asarray([
             [1.2],
-            [(1.2+3.0+4.0)/3],
+            [(1.2+3.6)/2],
+            [3.6],
             [3.0],
-            [4.0]
+            [4.0],
+            [(3.0+4.0)/2]
         ])
         instances, _ = al.load_dataset()
         numpy.testing.assert_array_almost_equal(expected_instances, instances)
