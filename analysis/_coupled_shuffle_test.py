@@ -11,8 +11,8 @@ __author__ = 'Emanuele Tamponi'
 class CoupledShuffleTest(unittest.TestCase):
 
     def test_shuffle_does_not_modify_input(self):
-        X = numpy.random.randn(10, 3)
-        y = numpy.random.choice(["a", "b"], size=10)
+        X = numpy.random.randn(100, 3)
+        y = numpy.random.choice(["a", "b"], size=100)
         shuffler = CoupledShuffle(X, y)
         Xs, ys = shuffler.shuffle()
         self.assertFalse(numpy.array_equal(X, Xs))

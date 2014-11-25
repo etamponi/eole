@@ -71,7 +71,10 @@ class ArffLoader(object):
                 for j, feature in enumerate(label_instances.transpose()):
                     nans = numpy.isnan(feature)
                     if numpy.any(nans):
-                        mean = feature[numpy.invert(nans)].sum() / numpy.invert(nans).sum()
+                        if numpy.invert(nans).sum() == 0:
+                            mean = 0.0
+                        else:
+                            mean = feature[numpy.invert(nans)].sum() / numpy.invert(nans).sum()
                         label_instances[nans, j] = mean
                         instances[labels == label] = label_instances
 
