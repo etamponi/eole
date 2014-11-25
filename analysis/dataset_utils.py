@@ -54,9 +54,6 @@ class ArffLoader(object):
                         # If everything is nan, remove the feature
                         data.pop(row)
                         continue
-                    # if numpy.any(nans):
-                    #     mean = data[row][numpy.invert(nans)].sum() / numpy.invert(nans).sum()
-                    #     data[row][nans] = mean
                     # Reshape to do hstack later
                     data[row] = data[row].reshape((len(data[row]), 1))
                 # Go to next row only if we have NOT removed the current one
