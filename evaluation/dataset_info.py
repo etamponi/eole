@@ -10,7 +10,7 @@ __author__ = 'Emanuele Tamponi'
 
 def main():
     for dataset_name in evaluation.dataset_names():
-        dataset_path = "evaluation/datasets/{}.arff".format(dataset_name)
+        dataset_path = "datasets/{}.arff".format(dataset_name)
         X, y = ArffLoader(dataset_path).load_dataset()
         X = preprocessing.MinMaxScaler().fit_transform(X)
 
