@@ -31,12 +31,3 @@ class AlmostRandomCentroidPicker(object):
             p = p / p.sum()
             centroids[i] = instances[numpy.random.multinomial(1, p).argmax()]
         return centroids
-
-
-class ClusterCenterPicker(object):
-
-    def __init__(self):
-        pass
-
-    def pick(self, instances, labels, n_centroids):
-        return KMeans(n_clusters=n_centroids).fit(instances).cluster_centers_
