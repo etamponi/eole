@@ -11,8 +11,9 @@ class ArffLoader(object):
         self.file_name = file_name
         self.label_attribute = label_attribute
         self.binarize = binarize
+        self.data, self.labels = self._load_dataset()
 
-    def load_dataset(self):
+    def _load_dataset(self):
         with open(self.file_name) as f:
             dataset = arff.load(f)
 
@@ -76,10 +77,11 @@ class ArffLoader(object):
                                 mean = label_feature[numpy.invert(nans)].sum() / numpy.invert(nans).sum()
                             label_feature[nans] = mean
                             feature_matrix[labels == label, i] = label_feature
+        return data, labels
 
-            instances = numpy.hstack(tuple(data))
-
-            return instances, labels
+    def get_dataset(self):
+            instances = numpy.hstack(tuple(self.data))
+            return instances, self.labels
 
 
 class CoupledShuffle(object):

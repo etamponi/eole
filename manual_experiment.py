@@ -94,7 +94,7 @@ class TransformerLoader(object):
         self.transform = transform
 
     def load_dataset(self):
-        X, y = self.loader.load_dataset()
+        X, y = self.loader.get_dataset()
         return self.transform.fit_transform(X), y
 
 

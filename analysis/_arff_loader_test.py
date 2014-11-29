@@ -24,7 +24,7 @@ class ArffLoaderTest(unittest.TestCase):
             "NEG",
             "NEG"
         ])
-        instances, labels = al.load_dataset()
+        instances, labels = al.get_dataset()
         numpy.testing.assert_array_equal(expected_instances, instances)
         numpy.testing.assert_array_equal(expected_labels, labels)
 
@@ -42,7 +42,7 @@ class ArffLoaderTest(unittest.TestCase):
             "egg",
             "cannon"
         ])
-        instances, labels = al.load_dataset()
+        instances, labels = al.get_dataset()
         numpy.testing.assert_array_equal(expected_instances, instances)
         numpy.testing.assert_array_equal(expected_labels, labels)
 
@@ -54,7 +54,7 @@ class ArffLoaderTest(unittest.TestCase):
             [0.0, 1.0, 0.0, 3.0],
             [0.0, 0.0, 1.0, 4.0]
         ])
-        instances, _ = al.load_dataset()
+        instances, _ = al.get_dataset()
         numpy.testing.assert_array_equal(expected_instances, instances)
 
     def test_load_dataset_with_unknown_feature(self):
@@ -65,7 +65,7 @@ class ArffLoaderTest(unittest.TestCase):
             [3.0],
             [4.0]
         ])
-        instances, _ = al.load_dataset()
+        instances, _ = al.get_dataset()
         numpy.testing.assert_array_equal(expected_instances, instances)
 
     def test_load_dataset_with_unknown_real_values(self):
@@ -78,7 +78,7 @@ class ArffLoaderTest(unittest.TestCase):
             [4.0],
             [(3.0+4.0)/2]
         ])
-        instances, _ = al.load_dataset()
+        instances, _ = al.get_dataset()
         numpy.testing.assert_array_almost_equal(expected_instances, instances)
 
     def test_load_dataset_with_useless_real_values(self):
@@ -89,7 +89,7 @@ class ArffLoaderTest(unittest.TestCase):
             [3.0],
             [4.0]
         ])
-        instances, _ = al.load_dataset()
+        instances, _ = al.get_dataset()
         numpy.testing.assert_array_almost_equal(expected_instances, instances)
 
     def test_load_dataset_with_useless_categorical_values(self):
@@ -100,5 +100,5 @@ class ArffLoaderTest(unittest.TestCase):
             [3.0],
             [4.0]
         ])
-        instances, _ = al.load_dataset()
+        instances, _ = al.get_dataset()
         numpy.testing.assert_array_almost_equal(expected_instances, instances)

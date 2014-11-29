@@ -20,7 +20,7 @@ class Experiment(object):
 
     def run(self):
         report = Report(self)
-        shuffler = CoupledShuffle(*self.dataset_loader.load_dataset())
+        shuffler = CoupledShuffle(*self.dataset_loader.get_dataset())
         for i in range(self.n_repetitions):
             instances, labels = shuffler.shuffle(seed=i)
             cv = StratifiedKFold(labels, n_folds=self.n_folds)
