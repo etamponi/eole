@@ -63,19 +63,21 @@ class ArffLoader(object):
                 # Go to next row only if we have NOT removed the current one
                 row += 1
 
-            instances = numpy.hstack(tuple(data))
-
             for label in numpy.unique(labels):
-                label_instances = instances[labels == label]
-                for j, feature in enumerate(label_instances.transpose()):
-                    nans = numpy.isnan(feature)
-                    if numpy.any(nans):
-                        if numpy.invert(nans).sum() == 0:
-                            mean = 0.0
-                        else:
-                            mean = feature[numpy.invert(nans)].sum() / numpy.invert(nans).sum()
-                        label_instances[nans, j] = mean
-                        instances[labels == label] = label_instances
+                label_mask = labels == label
+                for feature_matrix in data:
+                    for i, feature in enumerate(feature_matrix.T):
+                        label_feature = feature[label_mask]
+                        nans = numpy.isnan(label_feature)
+                        if numpy.any(nans):
+                            if numpy.invert(nans).sum() == 0:
+                                mean = 0.0
+                            else:
+                                mean = label_feature[numpy.invert(nans)].sum() / numpy.invert(nans).sum()
+                            label_feature[nans] = mean
+                            feature_matrix[labels == label, i] = label_feature
+
+            instances = numpy.hstack(tuple(data))
 
             return instances, labels
 
