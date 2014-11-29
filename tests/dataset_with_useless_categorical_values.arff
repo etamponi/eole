@@ -1,0 +1,11 @@
+@RELATION example
+
+@ATTRIBUTE useless {A, B, C}
+@ATTRIBUTE feature REAL
+@ATTRIBUTE class {POS, NEG}
+
+@DATA
+A, 1.2, POS
+A, 0.3, POS
+A, 3.0, NEG
+A, 4.0, NEG

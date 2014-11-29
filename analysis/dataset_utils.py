@@ -56,12 +56,14 @@ class ArffLoader(object):
                         continue
                     # Reshape to do hstack later
                     data[row] = data[row].reshape((len(data[row]), 1))
+                # Check if feature contains information
+                if numpy.all(data[row].var(axis=0) == 0):
+                    data.pop(row)
+                    continue
                 # Go to next row only if we have NOT removed the current one
                 row += 1
 
             instances = numpy.hstack(tuple(data))
-            useless_indices = numpy.where(instances.var(axis=0) == 0)
-            instances = numpy.delete(instances, useless_indices, axis=1)
 
             for label in numpy.unique(labels):
                 label_instances = instances[labels == label]
