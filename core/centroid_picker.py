@@ -1,6 +1,5 @@
 import numpy
 from scipy.spatial import distance
-from sklearn.cluster.k_means_ import KMeans
 
 
 __author__ = 'Emanuele'
