@@ -3,7 +3,7 @@ import re
 
 from scipy.stats.stats import ttest_ind
 
-from analysis.report import Report
+from eole.analysis.report import Report
 
 
 __author__ = 'Emanuele Tamponi'

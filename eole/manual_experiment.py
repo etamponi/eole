@@ -8,7 +8,7 @@ from analysis.dataset_utils import ArffLoader
 from analysis.experiment import Experiment
 from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
 from core.ensemble_trainer import EnsembleTrainer
-from core.eole import EOLE
+from eole.core.eole import EOLE
 from core.exponential_weigher import ExponentialWeigher
 
 
