@@ -18,16 +18,13 @@ def main():
     improv_by_dataset = {}
     for dataset_name in dataset_names():
         improv_by_dataset[dataset_name] = ("", 0, False)
-        try:
-            report_rf = Report.load("reports/{}_small_random_forest.rep".format(dataset_name))
-        except:
-            continue
+        report_rf = Report.load("reports/small/{}_small_random_forest.rep".format(dataset_name))
         accuracy_full_rf = report_rf.accuracy_sample[:, -1]
         print "COMPARISON FOR: {}".format(dataset_name.upper())
         print "Random Forest: {:.3f} +- {:.3f}".format(
             accuracy_full_rf.mean(), accuracy_full_rf.std()
         )
-        for dataset_path in glob.glob("reports/{}_small_eole_*.rep".format(dataset_name)):
+        for dataset_path in glob.glob("reports/small/{}_small_eole_*.rep".format(dataset_name)):
             report_eole = Report.load(dataset_path)
             eole_name = re.search(r"{}_([\w_]+)\.rep".format(dataset_name), dataset_path).group(1)
             # n_max = report_eole.synthesis()["accuracy"]["mean"].argmax()
@@ -64,7 +61,7 @@ def main():
         if data[2]:
             j += 1
         i += 1
-    print "Significative total improvements:", j
+    print "Significant total improvements:", j
 
 
 def one_side_test(first, second):

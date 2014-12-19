@@ -10,15 +10,15 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset_name = "vehicle"
+    dataset_name = "rootstock"
 
-    report_rf = Report.load("evaluation/reports/{}_small_random_forest.rep".format(dataset_name))
+    report_rf = Report.load("evaluation/reports/small/{}_small_random_forest.rep".format(dataset_name))
     accuracy_full_rf = report_rf.accuracy_sample[:, -1]
     print "COMPARISON FOR: {}".format(dataset_name.upper())
     print "Random Forest: {:.3f} +- {:.3f}".format(
         accuracy_full_rf.mean(), accuracy_full_rf.std()
     )
-    for dataset_path in glob.glob("evaluation/reports/{}_small_eole*.rep".format(dataset_name)):
+    for dataset_path in glob.glob("evaluation/reports/small/{}_small_eole*.rep".format(dataset_name)):
         report_eole = Report.load(dataset_path)
         eole_name = re.search(r"{}_([\w_]+)\.rep".format(dataset_name), dataset_path).group(1)
         # n_max = report_eole.synthesis()["accuracy"]["mean"].argmax()
