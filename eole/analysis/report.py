@@ -27,7 +27,6 @@ class Report(object):
         for j in range(self.accuracy_sample.shape[1]):
             predictions = prediction_matrix[:, j]
             self.accuracy_sample[self.current_run][j] = accuracy_score(labels, predictions)
-
             precision, recall, f1 = precision_recall_f1_score(labels, predictions)
             self.precision_sample[self.current_run][j] = precision
             self.recall_sample[self.current_run][j] = recall

@@ -85,7 +85,7 @@ def make_boosting():
     return EOLE(
         n_experts=1,
         ensemble_trainer=EnsembleTrainer(
-            base_estimator=AdaBoostClassifier(n_estimators=10),
+            base_estimator=AdaBoostClassifier(base_estimator=DecisionTreeClassifier(), n_estimators=10),
             centroid_picker=RandomCentroidPicker(),
             weigher_sampler=GeneralizedBootstrap(sample_percent=100, weigher=ExponentialWeigher(precision=0, power=1))
         ),

@@ -58,3 +58,5 @@ target/
 
 # Experimental results
 reports/*.rep
+figures/*.tex
+figures/*.pdf
