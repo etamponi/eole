@@ -4,12 +4,12 @@ from sklearn import preprocessing
 from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-from analysis.dataset_utils import ArffLoader
-from analysis.experiment import Experiment
-from core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
-from core.ensemble_trainer import EnsembleTrainer
+from eole.analysis.dataset_utils import ArffLoader
+from eole.analysis.experiment import Experiment
+from eole.core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
+from eole.core.ensemble_trainer import EnsembleTrainer
 from eole.core.flt import EOLE
-from core.exponential_weigher import ExponentialWeigher
+from eole.core.exponential_weigher import ExponentialWeigher
 
 
 __author__ = 'Emanuele Tamponi'
@@ -17,7 +17,7 @@ __author__ = 'Emanuele Tamponi'
 
 def main():
     dataset = "autos"
-    dataset_path = "evaluation/datasets/{}.arff".format(dataset)
+    dataset_path = "datasets/{}.arff".format(dataset)
 
     n_experts = 10
     n_inner_experts = 1
