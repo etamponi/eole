@@ -1,6 +1,6 @@
 import unittest
 
-from sympy.external.tests.test_autowrap import numpy
+import numpy
 
 from eole.core.interfaces import BaseWeigher
 from eole.core.local_expert import LocalExpert

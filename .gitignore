@@ -57,6 +57,7 @@ target/
 .idea/
 
 # Experimental results
-eole/evaluation/reports/*/*.rep
-eole/evaluation/figures/*/*.tex
-eole/evaluation/figures/*/*.pdf
+*.dat
+*.rep
+*.tex
+*.pdf
