@@ -2,8 +2,10 @@ import os
 
 from scipy.spatial import distance
 from sklearn import preprocessing
-from sklearn.ensemble.weight_boosting import AdaBoostClassifier
-from sklearn.tree.tree import DecisionTreeClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import BernoulliNB
 
 from eole.analysis.dataset_utils import ArffLoader
 from eole.analysis.experiment import Experiment
@@ -23,31 +25,34 @@ def main():
     run_parallel(experiments_on_dataset, arg_list)
 
 
+# noinspection PyTypeChecker
 def experiments_on_dataset(dataset_name):
     n_folds = 10
     repetitions = 10
     ensembles = [
+        ("small_boosting_logreg", make_boosting(base_estimator=BernoulliNB())),
+        ("small_bagging_logreg", make_bagging(base_estimator=BernoulliNB())),
         ("small_random_forest", make_random_forest()),
         ("small_boosting", make_boosting()),
         ("small_bagging", make_bagging()),
-        ("small_eole_10_050", make_eole(0.1, 50)),
-        ("small_eole_10_100", make_eole(0.1, 100)),
-        ("small_eole_10_Nil", make_eole(0.1, None)),
+        # ("small_eole_10_050", make_eole(0.1, 50)),
+        # ("small_eole_10_100", make_eole(0.1, 100)),
+        # ("small_eole_10_Nil", make_eole(0.1, None)),
         ("small_eole_30_050", make_eole(0.3, 50)),
-        ("small_eole_30_100", make_eole(0.3, 100)),
-        ("small_eole_30_Nil", make_eole(0.3, None)),
-        ("small_eole_50_050", make_eole(0.5, 50)),
-        ("small_eole_50_100", make_eole(0.5, 100)),
-        ("small_eole_50_Nil", make_eole(0.5, None)),
-        ("small_eole_10_050_50", make_eole(0.1, 50, 50)),
-        ("small_eole_10_100_50", make_eole(0.1, 100, 50)),
-        ("small_eole_10_Nil_50", make_eole(0.1, None, 50)),
-        ("small_eole_30_050_50", make_eole(0.3, 50, 50)),
-        ("small_eole_30_100_50", make_eole(0.3, 100, 50)),
-        ("small_eole_30_Nil_50", make_eole(0.3, None, 50)),
-        ("small_eole_50_050_50", make_eole(0.5, 50, 50)),
-        ("small_eole_50_100_50", make_eole(0.5, 100, 50)),
-        ("small_eole_50_Nil_50", make_eole(0.5, None, 50)),
+        # ("small_eole_30_100", make_eole(0.3, 100)),
+        # ("small_eole_30_Nil", make_eole(0.3, None)),
+        # ("small_eole_50_050", make_eole(0.5, 50)),
+        # ("small_eole_50_100", make_eole(0.5, 100)),
+        # ("small_eole_50_Nil", make_eole(0.5, None)),
+        # ("small_eole_10_050_50", make_eole(0.1, 50, 50)),
+        # ("small_eole_10_100_50", make_eole(0.1, 100, 50)),
+        # ("small_eole_10_Nil_50", make_eole(0.1, None, 50)),
+        # ("small_eole_30_050_50", make_eole(0.3, 50, 50)),
+        # ("small_eole_30_100_50", make_eole(0.3, 100, 50)),
+        # ("small_eole_30_Nil_50", make_eole(0.3, None, 50)),
+        # ("small_eole_50_050_50", make_eole(0.5, 50, 50)),
+        # ("small_eole_50_100_50", make_eole(0.5, 100, 50)),
+        # ("small_eole_50_Nil_50", make_eole(0.5, None, 50)),
     ]
     print "Start experiments on: {}".format(dataset_name)
     for ens_name, ensemble in ensembles:
@@ -81,11 +86,11 @@ def make_random_forest():
     )
 
 
-def make_boosting():
+def make_boosting(base_estimator=DecisionTreeClassifier()):
     return EOLE(
         n_experts=1,
         ensemble_trainer=EnsembleTrainer(
-            base_estimator=AdaBoostClassifier(base_estimator=DecisionTreeClassifier(), n_estimators=10),
+            base_estimator=AdaBoostClassifier(base_estimator=base_estimator, n_estimators=10),
             centroid_picker=RandomCentroidPicker(),
             weigher_sampler=GeneralizedBootstrap(sample_percent=100, weigher=ExponentialWeigher(precision=0, power=1))
         ),
@@ -95,11 +100,11 @@ def make_boosting():
     )
 
 
-def make_bagging():
+def make_bagging(base_estimator=DecisionTreeClassifier(max_features=None)):
     return EOLE(
         n_experts=10,
         ensemble_trainer=EnsembleTrainer(
-            base_estimator=DecisionTreeClassifier(max_features=None),
+            base_estimator=base_estimator,
             centroid_picker=RandomCentroidPicker(),
             weigher_sampler=GeneralizedBootstrap(sample_percent=100, weigher=ExponentialWeigher(precision=0, power=1))
         ),

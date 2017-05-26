@@ -1,14 +1,18 @@
 from scipy.spatial import distance
 from scipy.stats.stats import ttest_ind
 from sklearn import preprocessing
+from sklearn.ensemble.weight_boosting import AdaBoostClassifier
 from sklearn.ensemble.forest import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import SVC
 
 from eole.analysis.dataset_utils import ArffLoader
 from eole.analysis.experiment import Experiment
 from eole.core.centroid_picker import RandomCentroidPicker, AlmostRandomCentroidPicker
 from eole.core.ensemble_trainer import EnsembleTrainer
 from eole.core.flt import EOLE
+from eole.core.generalized_bootstrap import GeneralizedBootstrap
 from eole.core.exponential_weigher import ExponentialWeigher
 
 
@@ -29,11 +33,13 @@ def main():
     weigher_sampler = ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean, sample_percent=None)
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
-    rf = make_random_forest(n_experts, n_inner_experts)
+    #rf = make_random_forest(n_experts, n_inner_experts)
+    rf = make_bagging(BernoulliNB())
+    #rf = make_boosting(KNeighborsClassifier())
 
     loader = ArffLoader(dataset_path)
     n_folds = 10
-    n_repetitions = 10
+    n_repetitions = 1
 
     experiment_eole = Experiment("{}_eole".format(dataset), eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("{}_rf".format(dataset), rf, loader, n_folds, n_repetitions)
@@ -61,6 +67,34 @@ def make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler):
         ),
         preprocessor=preprocessing.MinMaxScaler(),
         use_probs=True,
+        use_competences=False
+    )
+
+
+def make_boosting(base_estimator):
+    return EOLE(
+        n_experts=1,
+        ensemble_trainer=EnsembleTrainer(
+            base_estimator=AdaBoostClassifier(base_estimator=base_estimator, n_estimators=10),
+            centroid_picker=RandomCentroidPicker(),
+            weigher_sampler=GeneralizedBootstrap(sample_percent=100, weigher=ExponentialWeigher(precision=0, power=1))
+        ),
+        preprocessor=None,
+        use_probs=False,
+        use_competences=False
+    )
+
+
+def make_bagging(base_estimator=DecisionTreeClassifier(max_features=None)):
+    return EOLE(
+        n_experts=10,
+        ensemble_trainer=EnsembleTrainer(
+            base_estimator=base_estimator,
+            centroid_picker=RandomCentroidPicker(),
+            weigher_sampler=GeneralizedBootstrap(sample_percent=100, weigher=ExponentialWeigher(precision=0, power=1))
+        ),
+        preprocessor=None,
+        use_probs=False,
         use_competences=False
     )
 

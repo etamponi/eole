@@ -10,16 +10,16 @@ from eole.evaluation import dataset_names
 __author__ = 'Emanuele Tamponi'
 
 
-CLASSIFIERS = ["boosting", "bagging", "random_forest"]
+CLASSIFIERS = ["boosting_logreg", "bagging_logreg", "random_forest"]
 LEGEND = {
-    "boosting": "AdaBoost",
-    "bagging": "Bagging",
+    "boosting_logreg": "AdaBoost",
+    "bagging_logreg": "Bagging",
     "random_forest": "Random Forest"
 }
 
-CANDIDATE_PERCENTS = [0.1, 0.3, 0.5]
-LEAF_NUMS = [50, 100, None]
-SAMPLE_PERCENTS = [50, 100]
+CANDIDATE_PERCENTS = [0.3]  # [0.1, 0.3, 0.5]
+LEAF_NUMS = [50]  # [50, 100, None]
+SAMPLE_PERCENTS = [100]  # [50, 100]
 
 NL = "\n"
 
@@ -160,7 +160,7 @@ def scatter_best_accuracies(pyplot):
 
 def comparison_table(candidate_percent, leaf_num, sample_percent):
     eole_name = get_eole_name(candidate_percent, leaf_num, sample_percent)
-    table_name = "comparison_{}".format(eole_name)
+    table_name = "comparison_vs_logreg_{}".format(eole_name)
 
     table_data = get_table_data(eole_name)
     with open("figures/{}.tex".format(table_name), "w") as f:
@@ -208,15 +208,15 @@ def comparison_table(candidate_percent, leaf_num, sample_percent):
 
 
 def get_table_data(eole_name):
-    data_file = "reports/small/comparison_{}.dat".format(eole_name)
+    data_file = "reports/small/comparison_vs_logreg_{}.dat".format(eole_name)
     if os.path.isfile(data_file):
         with open(data_file) as f:
             return cPickle.load(f)
     table_data = {}
     info_sum = {
-        "boosting": numpy.zeros(3, dtype=int),
-        "bagging": numpy.zeros(3, dtype=int),
-        "random_forest": numpy.zeros(3, dtype=int)
+        "boosting_logreg": numpy.zeros(3, dtype=float),
+        "bagging_logreg": numpy.zeros(3, dtype=float),
+        "random_forest": numpy.zeros(3, dtype=float)
     }
     for dataset in dataset_names():
         row = {}

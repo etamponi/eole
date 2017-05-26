@@ -1,5 +1,5 @@
 import numpy
-from sklearn.metrics.metrics import accuracy_score
+from sklearn.metrics import accuracy_score
 
 __author__ = 'Emanuele Tamponi'
 

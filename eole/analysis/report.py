@@ -3,7 +3,7 @@ import os
 import cPickle
 
 import numpy
-from sklearn.metrics.metrics import accuracy_score
+from sklearn.metrics import accuracy_score
 
 from eole.analysis.metrics import precision_recall_f1_score
 
