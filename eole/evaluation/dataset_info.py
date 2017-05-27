@@ -2,7 +2,7 @@ import numpy
 from sklearn import preprocessing
 
 from eole.analysis.dataset_utils import ArffLoader
-import evaluation
+from eole import evaluation
 
 
 __author__ = 'Emanuele Tamponi'

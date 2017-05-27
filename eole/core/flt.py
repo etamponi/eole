@@ -33,7 +33,7 @@ class EOLE(object):
             instances = self.preprocessor.transform(instances)
 
         competence_matrix = matrix_utils.competence_matrix(instances, self.experts)
-        probability_matrix = matrix_utils.probability_matrix(instances, self.experts, len(self.labels))
+        probability_matrix = matrix_utils.probability_matrix(instances, self.experts, self.labels)
 
         # Sort the probability matrix in decreasing competence order
         indices = matrix_utils.order(competence_matrix)

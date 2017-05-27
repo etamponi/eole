@@ -1,5 +1,6 @@
+import math
 from scipy.spatial import distance
-from scipy.stats.stats import ttest_ind
+from scipy.stats import ttest_ind
 from sklearn import preprocessing
 from sklearn.ensemble.weight_boosting import AdaBoostClassifier
 from sklearn.ensemble.forest import RandomForestClassifier
@@ -26,32 +27,34 @@ def main():
     n_experts = 10
     n_inner_experts = 1
     if n_inner_experts == 1:
-        base_estimator = DecisionTreeClassifier(max_features=0.5, max_leaf_nodes=None)
+        base_estimator = DecisionTreeClassifier(max_features=0.1, max_leaf_nodes=None)
     else:
         base_estimator = RandomForestClassifier(max_features=0.3, n_estimators=n_inner_experts)
     centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.euclidean)
     weigher_sampler = ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean, sample_percent=None)
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
-    #rf = make_random_forest(n_experts, n_inner_experts)
-    rf = make_bagging(BernoulliNB())
-    #rf = make_boosting(KNeighborsClassifier())
+    # rf = make_random_forest(n_experts, n_inner_experts)
+    # rf = make_bagging(DecisionTreeClassifier(max_features=None))
+    rf = make_boosting(SVC())
 
     loader = ArffLoader(dataset_path)
     n_folds = 10
-    n_repetitions = 1
+    n_repetitions = 10
 
     experiment_eole = Experiment("{}_eole".format(dataset), eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("{}_rf".format(dataset), rf, loader, n_folds, n_repetitions)
 
     report_eole = experiment_eole.run()
     accuracy_eole = report_eole.synthesis()["accuracy"]["mean"]
-    print "EOLE: {:.3f} {:.3f} ({})".format(accuracy_eole[-1], accuracy_eole.max(), accuracy_eole.argmax())
+    stddev_eole = math.sqrt(report_eole.synthesis()["accuracy"]["variance"][-1])
+    print "EOLE: {:.3f} {:.3f}".format(accuracy_eole[-1], stddev_eole)
 
     report_rf = experiment_rf.run()
     accuracy_rf = report_rf.synthesis()["accuracy"]["mean"]
-    print "EOLE: {:.3f} {:.3f} ({})".format(accuracy_eole[-1], accuracy_eole.max(), accuracy_eole.argmax())
-    print "  RF: {:.3f} {:.3f} ({})".format(accuracy_rf[-1], accuracy_rf.max(), accuracy_rf.argmax())
+    stddev_rf = math.sqrt(report_rf.synthesis()["accuracy"]["variance"][-1])
+    print "EOLE: {:.3f} {:.3f}".format(accuracy_eole[-1], stddev_eole)
+    print "  RF: {:.3f} {:.3f}".format(accuracy_rf[-1], stddev_rf)
 
     p = one_side_test(report_eole.accuracy_sample[:, -1], report_rf.accuracy_sample[:, -1])
     print "P(EOLE > RF) = {:.3f} => {}".format(p, p > 0.95)
@@ -85,7 +88,7 @@ def make_boosting(base_estimator):
     )
 
 
-def make_bagging(base_estimator=DecisionTreeClassifier(max_features=None)):
+def make_bagging(base_estimator):
     return EOLE(
         n_experts=10,
         ensemble_trainer=EnsembleTrainer(

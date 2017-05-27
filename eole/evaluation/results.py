@@ -9,11 +9,12 @@ from eole.evaluation import dataset_names
 
 __author__ = 'Emanuele Tamponi'
 
+suffix = "_sgd"
 
-CLASSIFIERS = ["boosting_logreg", "bagging_logreg", "random_forest"]
+CLASSIFIERS = ["boosting"+suffix, "bagging"+suffix, "random_forest"]
 LEGEND = {
-    "boosting_logreg": "AdaBoost",
-    "bagging_logreg": "Bagging",
+    "boosting"+suffix: "AdaBoost",
+    "bagging"+suffix: "Bagging",
     "random_forest": "Random Forest"
 }
 
@@ -45,7 +46,7 @@ def synthesis_table():
         eole_name = get_eole_name(candidate_percent, leaf_num, sample_percent)
         all_info[eole_name] = get_table_data(eole_name)["info_sum"]
 
-    table_name = "synthesis_flt"
+    table_name = "synthesis"+suffix+"_flt"
     with open("figures/{}.tex".format(table_name), "w") as f:
         f.writelines((r"\begin{table}\centering", NL))
         f.writelines((r"\renewcommand{\arraystretch}{1.2}", NL))
@@ -120,7 +121,7 @@ def scatter_accuracies(pyplot, candidate_percent, leaf_num, sample_percent):
     pyplot.grid()
 
     pyplot.gcf().set_size_inches(3, 3)
-    pyplot.savefig("figures/plot_comparison_{}.pdf".format(eole_name), bbox_inches="tight")
+    pyplot.savefig("figures/plot_comparison{}_{}.pdf".format(suffix, eole_name), bbox_inches="tight")
     pyplot.close()
 
 
@@ -154,13 +155,13 @@ def scatter_best_accuracies(pyplot):
     pyplot.grid()
 
     pyplot.gcf().set_size_inches(3, 3)
-    pyplot.savefig("figures/plot_comparison_overall.pdf", bbox_inches="tight")
+    pyplot.savefig("figures/plot_comparison"+suffix+"_overall.pdf", bbox_inches="tight")
     pyplot.close()
 
 
 def comparison_table(candidate_percent, leaf_num, sample_percent):
     eole_name = get_eole_name(candidate_percent, leaf_num, sample_percent)
-    table_name = "comparison_vs_logreg_{}".format(eole_name)
+    table_name = "comparison"+suffix+"_{}".format(eole_name)
 
     table_data = get_table_data(eole_name)
     with open("figures/{}.tex".format(table_name), "w") as f:
@@ -208,14 +209,14 @@ def comparison_table(candidate_percent, leaf_num, sample_percent):
 
 
 def get_table_data(eole_name):
-    data_file = "reports/small/comparison_vs_logreg_{}.dat".format(eole_name)
+    data_file = "reports/small/comparison"+suffix+"_{}.dat".format(eole_name)
     if os.path.isfile(data_file):
         with open(data_file) as f:
             return cPickle.load(f)
     table_data = {}
     info_sum = {
-        "boosting_logreg": numpy.zeros(3, dtype=float),
-        "bagging_logreg": numpy.zeros(3, dtype=float),
+        "boosting"+suffix: numpy.zeros(3, dtype=float),
+        "bagging"+suffix: numpy.zeros(3, dtype=float),
         "random_forest": numpy.zeros(3, dtype=float)
     }
     for dataset in dataset_names():

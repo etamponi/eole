@@ -62,8 +62,10 @@ def competence_matrix(instances, experts):
     return cm
 
 
-def probability_matrix(instances, experts, n_labels):
+def probability_matrix(instances, experts, classes):
+    n_labels = len(classes)
     pm = numpy.zeros((len(instances), len(experts), n_labels))
     for j, expert in enumerate(experts):
-        pm[:, j, :] = expert.predict_probs(instances)
+        probs = expert.predict_probs(instances)
+        pm[:, j, :] = probs
     return pm

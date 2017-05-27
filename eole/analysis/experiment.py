@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from sklearn.cross_validation import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold
 
 from eole.analysis.dataset_utils import CoupledShuffle
 from eole.analysis.report import Report
@@ -23,7 +23,7 @@ class Experiment(object):
         shuffler = CoupledShuffle(*self.dataset_loader.get_dataset())
         for i in range(self.n_repetitions):
             instances, labels = shuffler.shuffle(seed=i)
-            cv = StratifiedKFold(labels, n_folds=self.n_folds)
+            cv = StratifiedKFold(n_splits=self.n_folds).split(instances, labels)
             for j, (train_indices, test_indices) in enumerate(cv):
                 print "Experiment {}: start repetition {}, fold {}".format(self.name, i+1, j+1)
                 ensemble = deepcopy(self.ensemble)

@@ -4,7 +4,7 @@ from scipy.spatial import distance
 from sklearn import preprocessing
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.naive_bayes import BernoulliNB
 
 from eole.analysis.dataset_utils import ArffLoader
@@ -30,8 +30,12 @@ def experiments_on_dataset(dataset_name):
     n_folds = 10
     repetitions = 10
     ensembles = [
-        ("small_boosting_logreg", make_boosting(base_estimator=BernoulliNB())),
-        ("small_bagging_logreg", make_bagging(base_estimator=BernoulliNB())),
+        ("small_boosting_sgd", make_boosting(base_estimator=SGDClassifier(loss="modified_huber"))),
+        ("small_bagging_sgd", make_bagging(base_estimator=SGDClassifier(loss="modified_huber"))),
+        ("small_boosting_logreg", make_boosting(base_estimator=LogisticRegression())),
+        ("small_bagging_logreg", make_bagging(base_estimator=LogisticRegression())),
+        ("small_boosting_naive", make_boosting(base_estimator=BernoulliNB())),
+        ("small_bagging_naive", make_bagging(base_estimator=BernoulliNB())),
         ("small_random_forest", make_random_forest()),
         ("small_boosting", make_boosting()),
         ("small_bagging", make_bagging()),

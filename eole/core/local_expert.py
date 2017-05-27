@@ -12,12 +12,14 @@ class LocalExpert(object):
         self.centroid = None
         self.sample_centroid = None
         self.oob_accuracy = 1.0
+        self.classes_ = None
 
     def train(self, instances, labels, centroid):
         self.centroid = centroid
         sample_weights = self.sampler_weigher.get_sample_weights(instances, centroid)
         self.sample_centroid = numpy.average(instances, axis=0, weights=sample_weights)
         self.base_estimator.fit(instances, labels, sample_weight=sample_weights)
+        self.classes_ = self.base_estimator.classes_
         instances_oob, labels_oob = instances[sample_weights == 0], labels[sample_weights == 0]
         if len(instances_oob) > 0:
             self.oob_accuracy = accuracy_score(labels_oob, self.predict(instances_oob))
