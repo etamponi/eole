@@ -44,7 +44,7 @@ def experiments_on_dataset(dataset_name):
         # ("small_eole_10_Nil", make_eole(0.1, None)),
         ("small_eole_30_050", make_eole(0.3, 50)),
         # ("small_eole_30_100", make_eole(0.3, 100)),
-        # ("small_eole_30_Nil", make_eole(0.3, None)),
+        ("small_eole_30_Nil", make_eole(0.3, None)),
         # ("small_eole_50_050", make_eole(0.5, 50)),
         # ("small_eole_50_100", make_eole(0.5, 100)),
         # ("small_eole_50_Nil", make_eole(0.5, None)),

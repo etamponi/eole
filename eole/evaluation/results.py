@@ -11,7 +11,7 @@ __author__ = 'Emanuele Tamponi'
 
 suffix = "_sgd"
 
-CLASSIFIERS = ["boosting"+suffix, "bagging"+suffix, "random_forest"]
+CLASSIFIERS = ["boosting"+suffix, "bagging"+suffix]  # , "random_forest"]
 LEGEND = {
     "boosting"+suffix: "AdaBoost",
     "bagging"+suffix: "Bagging",
@@ -19,7 +19,7 @@ LEGEND = {
 }
 
 CANDIDATE_PERCENTS = [0.3]  # [0.1, 0.3, 0.5]
-LEAF_NUMS = [50]  # [50, 100, None]
+LEAF_NUMS = [None]  # [50, 100, None]
 SAMPLE_PERCENTS = [100]  # [50, 100]
 
 NL = "\n"
@@ -32,11 +32,11 @@ def main():
     for candidate_percent, leaf_num, sample_percent in product(CANDIDATE_PERCENTS, LEAF_NUMS, SAMPLE_PERCENTS):
         get_table_data(get_eole_name(candidate_percent, leaf_num, sample_percent))
         comparison_table(candidate_percent, leaf_num, sample_percent)
-        scatter_accuracies(pyplot, candidate_percent, leaf_num, sample_percent)
+        # scatter_accuracies(pyplot, candidate_percent, leaf_num, sample_percent)
 
     scatter_best_accuracies(pyplot)
 
-    synthesis_table()
+    # synthesis_table()
 
 
 def synthesis_table():
@@ -115,7 +115,7 @@ def scatter_accuracies(pyplot, candidate_percent, leaf_num, sample_percent):
     pyplot.ylim(70, 100)
     pyplot.xticks(numpy.linspace(70, 100, 7))
     pyplot.yticks(numpy.linspace(70, 100, 7))
-    pyplot.xlabel("Best other")
+    pyplot.xlabel("Best with Logistic Regression")
     pyplot.ylabel("FLT")
     pyplot.axes().set_aspect(1)
     pyplot.grid()
@@ -149,8 +149,8 @@ def scatter_best_accuracies(pyplot):
     pyplot.ylim(70, 100)
     pyplot.xticks(numpy.linspace(70, 100, 7))
     pyplot.yticks(numpy.linspace(70, 100, 7))
-    pyplot.xlabel("Best other")
-    pyplot.ylabel("Best FLT")
+    pyplot.xlabel("Best with Stochastic Gradient Descent")
+    pyplot.ylabel("FLT")
     pyplot.axes().set_aspect(1)
     pyplot.grid()
 
@@ -217,7 +217,7 @@ def get_table_data(eole_name):
     info_sum = {
         "boosting"+suffix: numpy.zeros(3, dtype=float),
         "bagging"+suffix: numpy.zeros(3, dtype=float),
-        "random_forest": numpy.zeros(3, dtype=float)
+        # "random_forest": numpy.zeros(3, dtype=float)
     }
     for dataset in dataset_names():
         row = {}

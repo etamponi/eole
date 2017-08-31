@@ -21,26 +21,27 @@ __author__ = 'Emanuele Tamponi'
 
 
 def main():
-    dataset = "autos"
-    dataset_path = "datasets/{}.arff".format(dataset)
+    dataset = "commercials/ndtv"
+    dataset_path = "bigdata/{}.arff".format(dataset)
 
     n_experts = 10
     n_inner_experts = 1
+    max_leaf_nodes = None
     if n_inner_experts == 1:
-        base_estimator = DecisionTreeClassifier(max_features=0.1, max_leaf_nodes=None)
+        base_estimator = DecisionTreeClassifier(max_features=0.3, max_leaf_nodes=max_leaf_nodes)
     else:
         base_estimator = RandomForestClassifier(max_features=0.3, n_estimators=n_inner_experts)
     centroid_picker = AlmostRandomCentroidPicker(dist_measure=distance.euclidean)
     weigher_sampler = ExponentialWeigher(precision=1, power=1, dist_measure=distance.euclidean, sample_percent=None)
 
     eole = make_eole(n_experts, base_estimator, centroid_picker, weigher_sampler)
-    # rf = make_random_forest(n_experts, n_inner_experts)
+    rf = make_random_forest(n_experts, n_inner_experts, max_leaf_nodes=max_leaf_nodes)
     # rf = make_bagging(DecisionTreeClassifier(max_features=None))
-    rf = make_boosting(SVC())
+    # rf = make_boosting(SVC())
 
     loader = ArffLoader(dataset_path)
     n_folds = 10
-    n_repetitions = 10
+    n_repetitions = 1
 
     experiment_eole = Experiment("{}_eole".format(dataset), eole, loader, n_folds, n_repetitions)
     experiment_rf = Experiment("{}_rf".format(dataset), rf, loader, n_folds, n_repetitions)
@@ -102,11 +103,13 @@ def make_bagging(base_estimator):
     )
 
 
-def make_random_forest(n_experts, n_inner_experts):
+def make_random_forest(n_experts, n_inner_experts, max_leaf_nodes=None):
     return EOLE(
         n_experts=1,
         ensemble_trainer=EnsembleTrainer(
-            base_estimator=RandomForestClassifier(n_estimators=n_experts*n_inner_experts, max_features="auto"),
+            base_estimator=RandomForestClassifier(
+                n_estimators=n_experts*n_inner_experts, max_features="auto", max_leaf_nodes=max_leaf_nodes
+            ),
             centroid_picker=RandomCentroidPicker(),
             weigher_sampler=ExponentialWeigher(precision=0, power=1)
         ),
